@@ -1,9 +1,8 @@
-
-// Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
-
 // Variables
-@import "variables";
+//@import "variables";
+@import "~bootswatch/dist/flatly/variables";
 
 // Bootstrap
-@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+@import "~bootstrap/scss/bootstrap";
+
+@import "~bootswatch/dist/flatly/bootswatch";
