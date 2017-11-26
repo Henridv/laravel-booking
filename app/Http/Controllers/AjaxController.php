@@ -45,6 +45,8 @@ class AjaxController extends Controller
 			$g->country = $guest['country'];
 			$g->save();
 
+			$guest['id'] = $g->id;
+			
 			return json_encode($guest);
 		} else {
 			return Redirect::to('/');

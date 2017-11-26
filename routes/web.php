@@ -56,13 +56,35 @@ Route::prefix('planning')->group(function() {
 		]);
 	})->name('booking.create');
 
+	Route::post('nieuw', 'PlanningController@createBooking');
+
 	Route::get('edit/{booking}', function(App\Booking $booking) {
+		$countries = CountryList::all('nl_BE');
+		
+		// move most common picks to front of array
+		$be = $countries['BE'];
+		$fr = $countries['FR'];
+		$nl = $countries['NL'];
+		$es = $countries['ES'];
+		$nope = "---------------";
+
+		$countries = ['BE' => $be, 'FR' => $fr, 'NL' => $nl, 'ES' => $es, $nope] + $countries;
+
 		return view('planning.create', [
 			'rooms' => Room::orderBy('name')->get(),
 			'guests' => Guest::orderBy('lastname')->get(),
 			'booking' => $booking,
+			'countries' => $countries,
 		]);
 	})->name('booking.edit');
+
+	Route::post('edit/{booking}', 'PlanningController@editBooking');
+	
+	Route::get('del/{booking}', function(App\Booking $booking) {
+		$booking->delete();
+		
+		return redirect()->route('planning');
+	})->name('booking.delete');
 
 	Route::get('getGuests', 'AjaxController@getGuests')->name('booking.ajax.guests');
 	Route::post('saveGuest', 'AjaxController@saveGuest')->name('booking.ajax.guest.save');

@@ -1,11 +1,11 @@
 // Variables
 //@import "variables";
-@import "~bootswatch/dist/simplex/variables";
+@import "~bootswatch/dist/flatly/variables";
 
 // Bootstrap
 @import "~bootstrap/scss/bootstrap";
 
-@import "~bootswatch/dist/simplex/bootswatch";
+@import "~bootswatch/dist/flatly/bootswatch";
 
 // select2
 @import "~select2/dist/css/select2";
@@ -17,7 +17,7 @@
 }
 
 td.booked {
-	background-color: $red;
+	// background-color: $red;
 	text-align: center;
 	color: white;
 }

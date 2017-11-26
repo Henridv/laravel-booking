@@ -62,8 +62,8 @@
         @for($d=0; $d<7; $d++)
           @php $date = $dates[$d] @endphp
           @if(isset($room->bookings) && ($booking = $room->hasBooking($date['date'], $i+1)))
-            <td data-toggle="tooltip" data-placement="left" title="{{ $booking->comments }}" colspan="{{ $booking->days() }}" class="booked"><a href="{{ route('booking.edit', $booking->id) }}">{{ $booking->customer->name }}</a></td>
-            @php $d += $booking->days() @endphp
+            <td data-toggle="tooltip" data-placement="left" title="{{ $booking->comments }}" colspan="{{ $booking->toShow($dates) }}" class="booked" style="background-color: {{ $booking->color() }}"><a href="{{ route('booking.edit', $booking->id) }}">{{ $booking->customer->name }}</a></td>
+            @php $d += ($booking->toShow($dates)-1) @endphp
           @else
             <td></td>
           @endif
