@@ -14,8 +14,8 @@ class RoomsTableSeeder extends Seeder
     {
         for ($i=0; $i < 5; $i++) {
             $r = new Room;
-            $r->name = str_random(10);
-            $r->beds = rand(1,6);
+            $r->name = "Kamer ".($i+1);
+            $r->beds = rand(3,6);
             $r->save();
         }
     }

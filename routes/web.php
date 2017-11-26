@@ -13,14 +13,60 @@
 
 use Illuminate\Http\Request;
 use App\Room;
+use App\Guest;
+
+use Carbon\Carbon;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-Route::get('planning', function() {
-	return view('welcome');
-})->name('planning');
+Route::prefix('planning')->group(function() {
+
+	Route::get('/', function(Request $request) {
+		$rooms = Room::orderBy('name')->get();
+		
+		Carbon::setWeekStartsAt(Carbon::SATURDAY);
+		$date = (new Carbon($request->query('date', "now")))->startOfWeek();
+		$dates = [];
+		for ($i=0; $i < 7; $i++) { 
+			$dates[$i] = ['day' => $date->format('D'), 'date_str' => $date->format('d/m/Y'), 'date' => new Carbon($date)];
+			$date->modify('+1 day');
+		}
+
+		return view('planning.index', ['rooms' => $rooms, 'dates' => $dates]);
+	})->name('planning');
+
+	Route::get('nieuw', function() {
+		$countries = CountryList::all('nl_BE');
+		
+		// move most common picks to front of array
+		$be = $countries['BE'];
+		$fr = $countries['FR'];
+		$nl = $countries['NL'];
+		$es = $countries['ES'];
+		$nope = "---------------";
+
+		$countries = ['BE' => $be, 'FR' => $fr, 'NL' => $nl, 'ES' => $es, $nope] + $countries;
+		
+		return view('planning.create', [
+			'rooms' => Room::orderBy('name')->get(),
+			'guests' => Guest::orderBy('lastname')->get(),
+			'countries' => $countries,
+		]);
+	})->name('booking.create');
+
+	Route::get('edit/{booking}', function(App\Booking $booking) {
+		return view('planning.create', [
+			'rooms' => Room::orderBy('name')->get(),
+			'guests' => Guest::orderBy('lastname')->get(),
+			'booking' => $booking,
+		]);
+	})->name('booking.edit');
+
+	Route::get('getGuests', 'AjaxController@getGuests')->name('booking.ajax.guests');
+	Route::post('saveGuest', 'AjaxController@saveGuest')->name('booking.ajax.guest.save');
+});
 
 Route::prefix('kamers')->group(function() {
 	Route::get('/', function() {
