@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Carbon\Carbon;
+
 use App\Booking;
 use App\Room;
+use App\Guest;
 
 class PlanningController extends Controller
 {
@@ -20,7 +23,7 @@ class PlanningController extends Controller
             'discount' => 'required|integer|min:0|max:100',
             'deposit' => 'required|integer|min:0',
             'guests' => 'required|integer|min:1',
-            'comments' => 'string',
+            'comments' => 'nullable|string',
         ]);
 
         $booking->arrival = $request->input('arrival');
@@ -34,7 +37,6 @@ class PlanningController extends Controller
 
         $booking->white = ("no" === $request->input('isyes', 'no'));
 
-        // if ($booking->rooms[0]->id !== (int)$request->input('room')) {
         $booking->rooms()->detach();
             $room = Room::find($request->input('room'));
             $beds = $room->findFreeBeds($booking);
@@ -48,10 +50,8 @@ class PlanningController extends Controller
                 echo 'ERROOOOOOOR';
                 die();
             }
-        // }
 
-        // $booking->save();
-        return redirect()->route('planning')->withInput();
+        return redirect()->route('booking.show', $booking);
     }
 
     public function createBooking(Request $request) {
@@ -94,6 +94,40 @@ class PlanningController extends Controller
             die();
         }
 
-        return redirect()->route('planning')->withInput();
+        return redirect()->route('planning', ['date' => $booking->arrival->toDateString()]);
+    }
+
+    public function editGuest(Request $request, Booking $booking, Guest $guest) {
+
+        $validatedData = $request->validate([
+            'firstname' => 'required|string',
+            'lastname' => 'required|string',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|string',
+            'country' => 'required|string|size:2',
+        ]);
+
+        $guest->firstname = $request->input('firstname');
+        $guest->lastname = $request->input('lastname');
+        $guest->email = $request->input('email');
+        $guest->phone = $request->input('phone');
+        $guest->country = $request->input('country');
+
+        $guest->save();
+
+        return redirect()->route('booking.show', $booking->id);
+    }
+
+    public static function getBookings($periodInWeeks) {
+        $start = new Carbon('now');
+        $end   = $start->copy()->addWeeks($periodInWeeks);
+
+        $bookings = Booking::where('arrival', '>=', $start)
+                        ->where('departure', '<=', $end)
+                        ->orderBy('arrival')
+                        //->orderBy('lastname')
+                        ->get();
+
+        return $bookings;
     }
 }

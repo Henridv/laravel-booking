@@ -14,7 +14,7 @@ $("#arrivalInput").change(function() {
 	var arr_date = moment($(this).val());
 	var dep_date = moment($("#departureInput").val());
 
-	if (arr_date.isAfter(dep_date)) {
+	if (!dep_date.isValid() || arr_date.isAfter(dep_date)) {
 		$("#departureInput").val(arr_date.format('YYYY-MM-DD'))
 		$("#departureInput").removeClass("heartbeat");
 
@@ -26,7 +26,7 @@ $("#departureInput").change(function() {
 	var arr_date = moment($("#arrivalInput").val());
 	var dep_date = moment($(this).val());
 
-	if (arr_date.isAfter(dep_date)) {
+	if (!arr_date.isValid() ||arr_date.isAfter(dep_date)) {
 		$("#arrivalInput").val(dep_date.format('YYYY-MM-DD'));
 		$("#arrivalInput").removeClass("heartbeat");
 

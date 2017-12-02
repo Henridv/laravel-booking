@@ -31,11 +31,11 @@ td.booked {
 }
 
 #planning__data {
-	position: absolute;
-	left: 0;
-	top: 0;
-	z-index: 1;
-	border: 1px solid transparent;
+	// position: absolute;
+	// left: 0;
+	// top: 0;
+	// z-index: 1;
+	// border: 1px solid transparent;
 	td a {
 		color: white;
 	}
@@ -44,6 +44,9 @@ td.booked {
 		background-color: $gray-300;
 		// color: white;
 	}
+  .striped {
+    background-color: rgba(0,0,0,.05);
+  }
 }
 
 .heartbeat {

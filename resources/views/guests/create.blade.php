@@ -1,32 +1,33 @@
-<div class="row justify-content">
-  <div class="col-12">
-  <fieldset>
-    <div class="form-group">
-      <label for="firstnameInput">Voornaam</label>
-      <input class="form-control" name="firstname" id="firstnameInput" placeholder="Voornaam" autocomplete="off" type="text" required>
-    </div>
-    <div class="form-group">
-      <label for="lastnameInput">Familienaam</label>
-      <input class="form-control" name="lastname" id="lastnameInput" placeholder="Familienaam" autocomplete="off" type="text" required>
-    </div>
-    <div class="form-group">
-      <label for="emailInput">Email</label>
-      <input class="form-control" name="email" id="emailInput" placeholder="Email" autocomplete="off" type="email" required>
-    </div>
-    <div class="form-group">
-      <label for="phoneInput">GSM nummer</label>
-      <input class="form-control" name="phone" id="phoneInput" placeholder="GSM nummer" autocomplete="off" type="text" required>
-    </div>
-    <div class="form-group">
-      <label for="country">Land</label>
-      {{-- <input class="form-control" name="country" id="country" placeholder="Land" autocomplete="off" type="text" required> --}}
-      <select class="form-control" name="country" id="country" required>
-        @if(isset($countries))
-          @foreach($countries as $code => $name)
-            <option value="{{ $code }}">{{ $name }}</option>
-          @endforeach
-        @endif
-      </select>
-    </div>
-</div>
+@extends('layout.base')
 
+@section('content')
+<h1>Gast</h1>
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+@if(isset($guest))
+  <form action="{{ route('guest.edit', [$guest->id, $booking->id]) }}" method="POST">
+@else
+  <form action="{{ route('guest.create') }}" method="POST">
+@endif
+  {{ csrf_field() }}
+  <fieldset>
+    @include('guests.create_form')
+    @if(isset($guest))
+      {{-- <a href="{{ route('guest.delete', $guest) }}" type="submit" class="btn btn-danger">Verwijder gast</a> --}}
+      <button type="submit" class="btn btn-primary float-right">Opslaan!</button>
+    @else
+      <button type="submit" class="btn btn-primary float-right">Voeg toe!</button>
+    @endif
+  </fieldset>
+</form>
+
+@endsection

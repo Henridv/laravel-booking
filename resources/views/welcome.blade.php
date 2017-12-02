@@ -1,60 +1,30 @@
 @extends('layout.base')
 
 @section('content')
-<h1>Welcome!</h1>
+<h1>Welkom!</h1>
 
-<table class="table table-striped table-hover table-bordered">
-  <thead class="thead-dark">
+<p>Overzicht voor de komende twee weken.</p>
+<table class="table table-hover table-striped">
+  <thead>
     <tr>
-      <th>#</th>
-      <th>Column heading</th>
-      <th>Column heading</th>
-      <th>Column heading</th>
-    </tr>
+      <th>Van</th>
+      <th>Tot</th>
+      <th>Boeker</th>
+      <th>Land</th>
+      <th># gasten</th>
+      <th>Kamer</th>
   </thead>
   <tbody>
+    @foreach($bookings as $booking)
     <tr>
-      <td>1</td>
-      <td>Column content</td>
-      <td>Column content</td>
-      <td>Column content</td>
+      <td>{{ $booking->arrival->format('d/m/Y') }}</td>
+      <td>{{ $booking->departure->format('d/m/Y') }}</td>
+      <td>{{ $booking->customer->name }}</td>
+      <td>{{ $booking->customer->country_str }}</td>
+      <td>{{ $booking->guests }}</td>
+      <td>{{ $booking->rooms[0]->name }}</td>
     </tr>
-    <tr>
-      <td>2</td>
-      <td>Column content</td>
-      <td>Column content</td>
-      <td>Column content</td>
-    </tr>
-    <tr class="table-info">
-      <td>3</td>
-      <td>Column content</td>
-      <td>Column content</td>
-      <td>Column content</td>
-    </tr>
-    <tr class="table-success">
-      <td>4</td>
-      <td>Column content</td>
-      <td>Column content</td>
-      <td>Column content</td>
-    </tr>
-    <tr class="table-danger">
-      <td>5</td>
-      <td>Column content</td>
-      <td>Column content</td>
-      <td>Column content</td>
-    </tr>
-    <tr class="table-warning">
-      <td>6</td>
-      <td>Column content</td>
-      <td>Column content</td>
-      <td>Column content</td>
-    </tr>
-    <tr class="table-active">
-      <td>7</td>
-      <td>Column content</td>
-      <td>Column content</td>
-      <td>Column content</td>
-    </tr>
+    @endforeach
   </tbody>
-</table> 
+</table>
 @endsection

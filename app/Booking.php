@@ -37,8 +37,8 @@ class Booking extends Model
 	 * number of days to show in current week
 	 */
 	public function toShow($dates) {
-		$start = $week_start = $dates[0]['date'];
-		$end   = $week_end   = $dates[count($dates)-1]['date'];
+		$start = $week_start = $dates[0]['date']->copy();
+		$end   = $week_end   = $dates[count($dates)-1]['date']->copy();
 
 		$week_end->addDay();
 
@@ -53,7 +53,7 @@ class Booking extends Model
 
 	public function color() {
 		$name = $this->customer->name;
-		$hash = sha1($name.$this->rooms[0]->name);
+		$hash = sha1($name.$this->arrival);
 
 		$r = substr($hash, 0,2);
 		$g = substr($hash, 2,2);

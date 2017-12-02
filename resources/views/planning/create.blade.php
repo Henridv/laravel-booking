@@ -24,11 +24,17 @@
     <div class="col-6">
       <div class="form-group">
         <label for="arrivalInput">Aankomst</label>
-        <input class="form-control" name="arrival" id="arrivalInput" autocomplete="off" type="date" required @if(isset($booking)) value="{{ $booking->arrival->format('Y-m-d') }}" @endif>
+        <input class="form-control" name="arrival" id="arrivalInput" autocomplete="off" type="date" required
+          @if(isset($booking)) value="{{ $booking->arrival->format('Y-m-d') }}"
+          @elseif(isset($date)) value="{{ $date->format('Y-m-d') }}"
+          @endif>
       </div>
       <div class="form-group">
         <label for="departureInput">Vertrek</label>
-        <input class="form-control" name="departure" id="departureInput" autocomplete="off" type="date" required @if(isset($booking)) value="{{ $booking->departure->format('Y-m-d') }}" @endif>
+        <input class="form-control" name="departure" id="departureInput" autocomplete="off" type="date" required
+          @if(isset($booking)) value="{{ $booking->departure->format('Y-m-d') }}"
+          @elseif(isset($date)) value="{{ $date->addWeek()->format('Y-m-d') }}"
+          @endif>
       </div>
       <div class="form-group">
         <label for="customerSelect">Hoofdboeker</label>
@@ -62,21 +68,21 @@
         <label for="basePriceInput">Basis prijs</label>
         <div class="input-group">
           <span class="input-group-addon">€</span>
-          <input class="form-control" name="basePrice" id="basePriceInput" autocomplete="off" type="number" required @if(isset($booking)) value="{{ $booking->basePrice }}" @else value="0" @endif" min="0">
+          <input class="form-control" name="basePrice" id="basePriceInput" autocomplete="off" type="number" required @if(isset($booking)) value="{{ $booking->basePrice }}" @else value="0" @endif min="0">
         </div>
       </div>
       <div class="form-group">
         <label for="discountInput">Korting</label>
         <div class="input-group">
           <span class="input-group-addon">%</span>
-          <input class="form-control" name="discount" id="discountInput" autocomplete="off" type="number" required @if(isset($booking)) value="{{ $booking->discount }}" @else value="0" @endif" min="0" max="100">
+          <input class="form-control" name="discount" id="discountInput" autocomplete="off" type="number" required @if(isset($booking)) value="{{ $booking->discount }}" @else value="0" @endif min="0" max="100">
         </div>
       </div>
       <div class="form-group">
         <label for="depositInput">Voorschot</label>
         <div class="input-group">
           <span class="input-group-addon">€</span>
-          <input class="form-control" name="deposit" id="depositInput" autocomplete="off" type="number" required @if(isset($booking)) value="{{ $booking->deposit }}" @else value="0" @endif" min="0">
+          <input class="form-control" name="deposit" id="depositInput" autocomplete="off" type="number" required @if(isset($booking)) value="{{ $booking->deposit }}" @else value="0" @endif min="0">
         </div>
       </div>
       <div class="form-group">
@@ -91,12 +97,12 @@
     <div class="col-12">
       <div class="form-group">
         <label for="commentTextArea">Opmerkingen</label>
-        <textarea class="form-control" name="comments" id="commentTextArea" rows="5">@if(isset($booking)) {{ $booking->comments }} @endif</textarea>
+        <textarea class="form-control" name="comments" id="commentTextArea" rows="5">@if(isset($booking)){{ $booking->comments }}@endif</textarea>
       </div>
     </div>
   </div>
     @if(isset($booking))
-      <a href="{{ route('booking.delete', $booking) }}" type="submit" class="btn btn-warning">Verwijder boeking</a>
+      <a href="{{ route('booking.delete', $booking) }}" type="submit" class="btn btn-danger">Verwijder boeking</a>
       <button type="submit" class="btn btn-primary float-right">Opslaan!</button>
     @else
       <button type="submit" class="btn btn-primary float-right">Voeg toe!</button>
@@ -114,7 +120,8 @@
         </button>
       </div>
       <div class="modal-body">
-        @include('guests.create')
+        @php unset($guest) @endphp
+        @include('guests.create_form')
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
