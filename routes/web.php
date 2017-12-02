@@ -12,7 +12,9 @@
 */
 
 use Illuminate\Http\Request;
+
 use App\Room;
+use App\Booking;
 use App\Guest;
 
 use App\Http\Controllers\PlanningController;
@@ -30,14 +32,18 @@ Route::get('/', function () {
 Route::prefix('planning')->group(function() {
 
 	Route::get('/', function(Request $request) {
-		$rooms = Room::orderBy('name')->get();
+		$rooms = Room::orderBy('sorting')->get();
 		
 		// setlocale(LC_TIME, app()->getlocale());
 		Carbon::setWeekStartsAt(Carbon::SATURDAY);
 		$date = (new Carbon($request->query('date', "now")))->startOfWeek();
 		$dates = [];
 		for ($i=0; $i < 7; $i++) { 
-			$dates[$i] = ['day' => $date->formatLocalized('%a'), 'date_str' => $date->format('d/m/Y'), 'date' => new Carbon($date)];
+			$dates[$i] = [
+				'day' => $date->formatLocalized('%a'),
+				'date_str' => $date->format('d/m/Y'),
+				'date' => new Carbon($date)
+			];
 			$date->modify('+1 day');
 		}
 
@@ -60,10 +66,16 @@ Route::prefix('planning')->group(function() {
 		$es = $countries['ES'];
 		$nope = "---------------";
 
-		$countries = ['BE' => $be, 'FR' => $fr, 'NL' => $nl, 'ES' => $es, $nope] + $countries;
+		$countries = [
+			'BE' => $be,
+			'FR' => $fr,
+			'NL' => $nl,
+			'ES' => $es,
+			$nope
+		] + $countries;
 		
 		return view('planning.create', [
-			'rooms' => Room::orderBy('name')->get(),
+			'rooms' => Room::orderBy('sorting')->get(),
 			'guests' => Guest::orderBy('lastname')->get(),
 			'countries' => $countries,
 			'date' => $date,
@@ -72,7 +84,7 @@ Route::prefix('planning')->group(function() {
 
 	Route::post('nieuw', 'PlanningController@createBooking');
 
-	Route::get('edit/{booking}', function(App\Booking $booking) {
+	Route::get('edit/{booking}', function(Booking $booking) {
 		$countries = CountryList::all(app()->getLocale());
 		
 		// move most common picks to front of array
@@ -82,10 +94,16 @@ Route::prefix('planning')->group(function() {
 		$es = $countries['ES'];
 		$nope = "---------------";
 
-		$countries = ['BE' => $be, 'FR' => $fr, 'NL' => $nl, 'ES' => $es, $nope] + $countries;
+		$countries = [
+			'BE' => $be,
+			'FR' => $fr,
+			'NL' => $nl,
+			'ES' => $es,
+			$nope
+		] + $countries;
 
 		return view('planning.create', [
-			'rooms' => Room::orderBy('name')->get(),
+			'rooms' => Room::orderBy('sorting')->get(),
 			'guests' => Guest::orderBy('lastname')->get(),
 			'booking' => $booking,
 			'countries' => $countries,
@@ -105,8 +123,11 @@ Route::prefix('planning')->group(function() {
 		return redirect()->route('planning');
 	})->name('booking.delete');
 
-	Route::get('getGuests', 'AjaxController@getGuests')->name('booking.ajax.guests');
-	Route::post('saveGuest', 'AjaxController@saveGuest')->name('booking.ajax.guest.save');
+	Route::get('getGuests', 'AjaxController@getGuests')
+		->name('booking.ajax.guests');
+		
+	Route::post('saveGuest', 'AjaxController@saveGuest')
+		->name('booking.ajax.guest.save');
 });
 
 Route::prefix('gast')->group(function() {
@@ -121,7 +142,13 @@ Route::prefix('gast')->group(function() {
 		$es = $countries['ES'];
 		$nope = "---------------";
 
-		$countries = ['BE' => $be, 'FR' => $fr, 'NL' => $nl, 'ES' => $es, $nope] + $countries;
+		$countries = [
+			'BE' => $be,
+			'FR' => $fr,
+			'NL' => $nl,
+			'ES' => $es,
+			$nope
+		] + $countries;
 
 		return view('guests.create', [
 			'guest' => $guest,
@@ -141,7 +168,7 @@ Route::prefix('gast')->group(function() {
 
 Route::prefix('kamers')->group(function() {
 	Route::get('/', function() {
-		$rooms = App\Room::orderBy('name')->get();
+		$rooms = Room::orderBy('sorting')->get();
 		return view('rooms.index', ['rooms' => $rooms]);
 	})->name('rooms');
 
@@ -180,6 +207,16 @@ Route::prefix('kamers')->group(function() {
 		$room->delete();
 		return redirect()->route('rooms');
 	})->name('room.del');
+
+	Route::get('sort/up/{room}', function(Room $room) {
+		$room->moveUp();
+		return redirect()->route('rooms');
+	})->name('room.sort.up');
+
+	Route::get('sort/down/{room}', function(Room $room) {
+		$room->moveDown();
+		return redirect()->route('rooms');
+	})->name('room.sort.down');
 });
 
 Route::get('extras', function() {

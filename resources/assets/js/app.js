@@ -49,22 +49,6 @@ $('#customerSelect').on('select2:select', function (e) {
 	}
 });
 
-/*$('#customerSelect').select2({
-	// placeholder: 'Selecteer gast...',
-	// alert($(this).data('custmer-id'));
-	placeholder: {
-		id: $(this).data('custmer-id'), // the value of the option
-		text: $(this).data('custmer-name')
-	},
-	ajax: {
-		url: '/planning/getGuests',
-		dataType: 'json'
-		// Additional AJAX parameters go here; see the end of this chapter for the full code of this example
-	},
-	theme: "bootstrap",
-	debug: true
-});*/
-
 $("#saveGuest").click(function() {
 	$(this).prop("disabled",true);
 	var firstname = $("[name='firstname']").val();

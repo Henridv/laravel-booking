@@ -42,12 +42,12 @@ class Booking extends Model
 
 		$week_end->addDay();
 
-		if ($this->arrival->gte($week_start))
-			$start = $this->arrival;
-
-		if ($this->departure->lte($week_end))
-			$end = $this->departure;
-
+		if ($this->arrival->gte($week_start)) {
+            $start = $this->arrival;
+        }
+		if ($this->departure->lte($week_end)){
+            $end = $this->departure;
+        }
 		return $start->diffInDays($end);
 	}
 

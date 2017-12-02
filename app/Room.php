@@ -46,4 +46,26 @@ class Room extends Model
 
 		return $beds;
 	}
+
+	public function moveUp() {
+		$higher = Room::where('sorting', $this->sorting-1)->first();
+		if ($higher) {
+			$higher->sorting += 1;
+			$higher->save();
+		}
+
+		$this->sorting--;
+		$this->save();
+	}
+
+	public function moveDown() {
+		$lower = Room::where('sorting', $this->sorting+1)->first();
+		if ($lower) {
+			$lower->sorting -= 1;
+			$lower->save();
+		}
+
+		$this->sorting++;
+		$this->save();
+	}
 }

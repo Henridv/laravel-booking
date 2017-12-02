@@ -94,7 +94,8 @@ class PlanningController extends Controller
             die();
         }
 
-        return redirect()->route('planning', ['date' => $booking->arrival->toDateString()]);
+        return redirect()
+            ->route('planning',['date' => $booking->arrival->toDateString()]);
     }
 
     public function editGuest(Request $request, Booking $booking, Guest $guest) {
