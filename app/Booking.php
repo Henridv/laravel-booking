@@ -60,4 +60,8 @@ class Booking extends Model
 		$b = substr($hash, 4,2);
 		return '#'.$r.$g.$b;
 	}
+
+    public function isNow() {
+        return Carbon::parse("now")->between($this->arrival, $this->departure);
+    }
 }

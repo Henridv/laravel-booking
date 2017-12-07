@@ -13,45 +13,52 @@
 
 
 .table span.roomname {
-	display: block;
+  display: block;
 }
 
 td.booked {
-	// background-color: $red;
-	text-align: center;
-	color: white;
+  // background-color: $red;
+  text-align: center;
+  color: white;
 }
 
 #planning__container {
-	position: relative;
+  position: relative;
 }
 
 #planning__grid {
-	color: white;
+  color: white;
 }
 
 #planning__data {
-	// position: absolute;
-	// left: 0;
-	// top: 0;
-	// z-index: 1;
-	// border: 1px solid transparent;
-	td a {
-		color: white;
-	}
+  // position: absolute;
+  // left: 0;
+  // top: 0;
+  // z-index: 1;
+  // border: 1px solid transparent;
+  td a {
+    color: white;
+    text-shadow: 0 0 2px #000;
+  }
 
-	.day__now {
-		background-color: $gray-300;
-		// color: white;
-	}
+  .day__now {
+    background-color: $gray-300;
+    // color: white;
+  }
   .striped {
     background-color: rgba(0,0,0,.05);
   }
 }
 
+tr.booking__now {
+  // background-color: $green !important;
+  color: white;
+  text-shadow: 0 0 2px #000;
+}
+
 .heartbeat {
-	-webkit-animation: heartbeat 1.5s ease-in-out forwards;
-	        animation: heartbeat 1.5s ease-in-out forwards;
+  -webkit-animation: heartbeat 1.5s ease-in-out forwards;
+          animation: heartbeat 1.5s ease-in-out forwards;
 }
 
 /* ----------------------------------------------

@@ -3,14 +3,27 @@
 @section('content')
 <h1>Planning</h1>
 
-<div class="btn-group mb-2" role="group">
-  <a href="{{ route('planning') }}?date={{ $dates[0]['date']->copy()->subWeek()->toDateString() }}" class="btn btn-primary"><i class="fa fa-chevron-left"></i></a>
-  <a href="{{ route('planning') }}?date={{ $dates[0]['date']->copy()->addWeek()->toDateString() }}" class="btn btn-primary"><i class="fa fa-chevron-right"></i></a>
+<div class="row">
+  <div class="col-sm d-flex justify-content-between">
+    <div>
+    <div class="btn-group mb-2" role="group">
+      <a href="{{ route('planning') }}?date={{ $dates[0]['date']->copy()->subWeek()->toDateString() }}" class="btn btn-primary"><i class="fa fa-chevron-left"></i></a>
+      <a href="{{ route('planning') }}?date={{ $dates[0]['date']->copy()->addWeek()->toDateString() }}" class="btn btn-primary"><i class="fa fa-chevron-right"></i></a>
+    </div>
+
+    <a href="{{ route('planning') }}" class="btn btn-secondary mb-2" type="button">Vandaag</a>
+    </div>
+    <form action="{{ route('planning.change_date') }}" class="form-inline d-inline-flex  justify-content-center mb-2" method="POST">
+      {{ csrf_field() }}
+      <input class="form-control mr-2" name="goto_date" id="arrivalInput"
+        autocomplete="off" type="date" required 
+        value="{{ $dates[0]['date']->toDateString() }}">
+      <button class="btn btn-success my-2 my-sm-0" type="submit">Ga</button>
+    </form>
+
+    <a href="{{ route('booking.create') }}?date={{ $dates[0]['date']->toDateString() }}" class="btn btn-success mb-2 float-right">Nieuwe boeking</a>
+  </div>
 </div>
-
-<a href="{{ route('planning') }}" class="btn btn-secondary mb-2" type="button">Vandaag</a>
-
-<a href="{{ route('booking.create') }}?date={{ $dates[0]['date']->toDateString() }}" class="btn btn-success mb-2 float-right">Nieuwe boeking</a>
 
 <div id="planning__container">
 {{-- <table class="table table-bordered" id="planning__grid">

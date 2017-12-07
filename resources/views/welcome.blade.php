@@ -16,7 +16,7 @@
   </thead>
   <tbody>
     @foreach($bookings as $booking)
-    <tr>
+    <tr @if ($booking->isNow()) class="booking__now" style="background-color: {{$booking->color() }}!important" @endif>
       <td>{{ $booking->arrival->format('d/m/Y') }}</td>
       <td>{{ $booking->departure->format('d/m/Y') }}</td>
       <td>{{ $booking->customer->name }}</td>

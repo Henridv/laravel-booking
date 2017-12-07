@@ -50,6 +50,11 @@ Route::prefix('planning')->group(function() {
 		return view('planning.index', ['rooms' => $rooms, 'dates' => $dates]);
 	})->name('planning');
 
+	Route::post('goto_date', function(Request $request) {
+		$date = Carbon::parse($request->input('goto_date', "now"))->toDateString();
+		return redirect()->route('planning', ['date' => $date]);
+	})->name('planning.change_date');
+	
 	Route::get('nieuw', function(Request $request) {
 		$countries = CountryList::all('nl_BE');
 		
