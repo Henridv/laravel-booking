@@ -33,8 +33,8 @@ class Room extends Model
 		$departure = $booking->departure;
 
 		$overlap = $this->bookings()
-			->where('arrival', '<=', $departure)
-			->where('departure', '>=', $arrival)
+			->where('arrival', '<', $departure)
+			->where('departure', '>', $arrival)
 			->get();
 		
 		$beds_taken = [];
@@ -48,9 +48,10 @@ class Room extends Model
 	}
 
 	public function moveUp() {
-		$higher = Room::where('sorting', $this->sorting-1)->first();
+		$higher = Room::where('sorting', '<', $this->sorting)
+					->orderBy('sorting', 'desc')->first();
 		if ($higher) {
-			$higher->sorting += 1;
+			$higher->sorting = $this->sorting;
 			$higher->save();
 		}
 
@@ -59,9 +60,10 @@ class Room extends Model
 	}
 
 	public function moveDown() {
-		$lower = Room::where('sorting', $this->sorting+1)->first();
+		$lower = Room::where('sorting', '>', $this->sorting)
+					->orderBy('sorting')->first();
 		if ($lower) {
-			$lower->sorting -= 1;
+			$lower->sorting = $this->sorting;
 			$lower->save();
 		}
 

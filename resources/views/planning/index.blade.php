@@ -59,6 +59,7 @@
     <tr>
       <td class="text-center" rowspan="{{ $room->beds }}"><span class="roomname">{{ $room->name }}</span></td>
       @for($i=0; $i<$room->beds; $i++)
+        @if ($i>0) <tr> @endif
         <td @php echo ($i == 0) ? 'class="striped"' : '' @endphp>bed {{ $i+1 }}</td>
         @for($d=0; $d<7; $d++)
           @php $date = $dates[$d]; @endphp
@@ -78,7 +79,6 @@
         @endfor
         </tr>
       @endfor
-    </tr>
     @endforeach
   </tbody>
 </table>

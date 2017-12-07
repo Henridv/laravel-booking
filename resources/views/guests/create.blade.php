@@ -14,7 +14,7 @@
 @endif
 
 @if(isset($guest))
-  <form action="{{ route('guest.edit', [$guest->id, $booking->id]) }}" method="POST">
+  <form action="{{ route('guest.edit', [$booking->id, $guest->id]) }}" method="POST">
 @else
   <form action="{{ route('guest.create') }}" method="POST">
 @endif

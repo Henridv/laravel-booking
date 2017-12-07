@@ -123,8 +123,8 @@ class PlanningController extends Controller
         $start = new Carbon('now');
         $end   = $start->copy()->addWeeks($periodInWeeks);
 
-        $bookings = Booking::where('arrival', '>=', $start)
-                        ->where('departure', '<=', $end)
+        $bookings = Booking::where('arrival', '<=', $end)
+                        ->where('departure', '>=', $start)
                         ->orderBy('arrival')
                         //->orderBy('lastname')
                         ->get();
