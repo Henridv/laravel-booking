@@ -24,17 +24,23 @@
     <div class="col-6">
       <div class="form-group">
         <label for="arrivalInput">Aankomst</label>
-        <input class="form-control" name="arrival" id="arrivalInput" autocomplete="off" type="date" required
-          @if(isset($booking)) value="{{ $booking->arrival->format('Y-m-d') }}"
-          @elseif(isset($date)) value="{{ $date->format('Y-m-d') }}"
-          @endif>
+        <div class="input-group date">
+          <input type="date" class="form-control" name="arrival" id="arrivalInput" autocomplete="off" required
+            @if(isset($booking)) value="{{ $booking->arrival->format('d-m-Y') }}"
+            @elseif(isset($date)) value="{{ $date->format('d-m-Y') }}"
+            @endif>
+          <span class="input-group-addon"><i class="fas fa-calendar-alt"></i></span>
+        </div>
       </div>
       <div class="form-group">
         <label for="departureInput">Vertrek</label>
-        <input class="form-control" name="departure" id="departureInput" autocomplete="off" type="date" required
-          @if(isset($booking)) value="{{ $booking->departure->format('Y-m-d') }}"
-          @elseif(isset($date)) value="{{ $date->addWeek()->format('Y-m-d') }}"
-          @endif>
+        <div class="input-group date">
+          <input type="date" class="form-control" name="departure" id="departureInput" autocomplete="off" required
+            @if(isset($booking)) value="{{ $booking->departure->format('d-m-Y') }}"
+            @elseif(isset($date)) value="{{ $date->addWeek()->format('d-m-Y') }}"
+            @endif>
+          <span class="input-group-addon"><i class="fas fa-calendar-alt"></i></span>
+        </div>
       </div>
       <div class="form-group">
         <label for="customerSelect">Hoofdboeker</label>
@@ -49,7 +55,7 @@
       <div class="form-group">
         <label for="guestsSelect"># gasten</label>
         <select class="form-control" name="guests" id="guestsSelect">
-          @for($i=0; $i<20; $i++)
+          @for($i=0; $i<$max_beds; $i++)
             <option @if(isset($booking) && $booking->guests == ($i+1)) selected @endif>{{ $i+1 }}</option>
           @endfor
         </select>
@@ -60,7 +66,10 @@
         <label for="roomSelect">Kamer</label>
         <select class="form-control" name="room" id="roomSelect">
           @foreach($rooms as $room)
-            <option @if(isset($booking) && $booking->rooms[0]->id == $room->id) selected @endif value="{{ $room->id }}">{{ $room->name }}</option>
+            <option
+            @if(isset($booking) && $booking->rooms[0]->id == $room->id) selected @endif
+            @if(isset($room_id) && $room_id == $room->id) selected @endif
+            value="{{ $room->id }}">{{ $room->name }}</option>
           @endforeach
         </select>
       </div>
@@ -102,7 +111,7 @@
     </div>
   </div>
     @if(isset($booking))
-      <a href="{{ route('booking.delete', $booking) }}" type="submit" class="btn btn-danger">Verwijder boeking</a>
+      <a href="{{ route('booking.delete', $booking) }}" class="btn btn-danger">Verwijder boeking</a>
       <button type="submit" class="btn btn-primary float-right">Opslaan!</button>
     @else
       <button type="submit" class="btn btn-primary float-right">Voeg toe!</button>
@@ -115,7 +124,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Nieuwe gast</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -124,8 +133,8 @@
         @include('guests.create_form')
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
-        <button type="button" class="btn btn-primary" id="saveGuest">Opslaan</button>
+        <button class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+        <button class="btn btn-primary" id="saveGuest">Opslaan</button>
       </div>
     </div>
   </div>

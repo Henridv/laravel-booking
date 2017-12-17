@@ -1,16 +1,22 @@
 // Variables
 //@import "variables";
-@import "~bootswatch/dist/flatly/variables";
+@import "~bootswatch/dist/cosmo/variables";
 
 // Bootstrap
 @import "~bootstrap/scss/bootstrap";
 
-@import "~bootswatch/dist/flatly/bootswatch";
+@import "~bootswatch/dist/cosmo/bootswatch";
 
 // select2
 @import "~select2/dist/css/select2";
 @import "~select2-bootstrap-theme/dist/select2-bootstrap";
 
+@import "resources/assets/css/bootstrap-datepicker";
+
+body {
+  font-family: "Open Sans", sans-serif;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
 
 .table span.roomname {
   display: block;
@@ -36,9 +42,32 @@ td.booked {
   // top: 0;
   // z-index: 1;
   // border: 1px solid transparent;
-  td a {
+
+  td {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  th.day {
+    width: 11.5%;
+  }
+
+  td a.book__link {
+    display: none;
+    margin: -0.75rem;
+    padding: 0.75rem;
+  }
+  td:hover a.book__link {
+    display: block;
+  }
+  td.booked a {
     color: white;
     text-shadow: 0 0 2px #000;
+  }
+  td.booked.reverse {
+    color: black;
+    text-shadow: 0 0 2px #fff;
   }
 
   .day__now {
@@ -46,7 +75,8 @@ td.booked {
     // color: white;
   }
   .striped {
-    background-color: rgba(0,0,0,.05);
+    // background-color: rgba(0,0,0,.05);
+    border-top: 2px solid $gray-600;
   }
 }
 

@@ -7,15 +7,17 @@
 
 require('./bootstrap');
 require('select2');
+require('./bootstrap-datepicker')
+require('./bootstrap-datepicker.nl-BE.min')
 
 var moment = require('moment');
 
 $("#arrivalInput").change(function() {
-	var arr_date = moment($(this).val());
-	var dep_date = moment($("#departureInput").val());
+	var arr_date = moment($(this).val(), "DD-MM-YYYY");
+	var dep_date = moment($("#departureInput").val(), "DD-MM-YYYY");
 
 	if (!dep_date.isValid() || arr_date.isAfter(dep_date)) {
-		$("#departureInput").val(arr_date.format('YYYY-MM-DD'))
+		$("#departureInput").val(arr_date.add(1,'d').format('DD-MM-YYYY'))
 		$("#departureInput").removeClass("heartbeat");
 
 		void $("#departureInput")[0].offsetWidth;
@@ -23,11 +25,11 @@ $("#arrivalInput").change(function() {
 	}
 });
 $("#departureInput").change(function() {
-	var arr_date = moment($("#arrivalInput").val());
-	var dep_date = moment($(this).val());
+	var arr_date = moment($("#arrivalInput").val(), "DD-MM-YYYY");
+	var dep_date = moment($(this).val(), "DD-MM-YYYY");
 
 	if (!arr_date.isValid() ||arr_date.isAfter(dep_date)) {
-		$("#arrivalInput").val(dep_date.format('YYYY-MM-DD'));
+		$("#arrivalInput").val(dep_date.subtract(1,'d').format('DD-MM-YYYY'));
 		$("#arrivalInput").removeClass("heartbeat");
 
 		void $("#arrivalInput")[0].offsetWidth;
@@ -100,3 +102,16 @@ $("#saveGuest").click(function() {
 });
 
 $(".booked").tooltip();
+
+var datepicker_options = {
+	format: "dd-mm-yyyy",
+    weekStart: 6,
+    maxViewMode: 2,
+    // todayBtn: "linked",
+    keyboardNavigation: false,
+    autoclose: true,
+    todayHighlight: true,
+    language: "nl-BE",
+};
+$('[type=date]').attr('type','text').datepicker(datepicker_options);
+$('.input-group.date').attr('type','text').datepicker(datepicker_options);

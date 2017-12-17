@@ -24,8 +24,15 @@ use Carbon\Carbon;
 Route::get('/', function () {
 	$bookings = PlanningController::getBookings(2);
 
+	$leaving = Booking::
+		where('departure', Carbon::parse('today'))
+        ->join('guests', 'guests.id', '=', 'bookings.customer_id')
+		->orderBy('guests.lastname')
+		->get();
+
     return view('welcome', [
-    	"bookings" => $bookings
+    	"bookings" => $bookings,
+    	"leaving" => $leaving
     ]);
 })->name('welcome');
 
@@ -59,10 +66,7 @@ Route::prefix('planning')->group(function() {
 		$countries = CountryList::all('nl_BE');
 		
 		Carbon::setWeekStartsAt(Carbon::SATURDAY);
-		$date = (new Carbon($request->query('date', "now")))->startOfWeek();
-		if(Carbon::parse("now")->gt($date)) {
-			$date->addWeek();
-		}
+		$date = (new Carbon($request->query('date', "now")));
 
 		// move most common picks to front of array
 		$be = $countries['BE'];
@@ -78,12 +82,16 @@ Route::prefix('planning')->group(function() {
 			'ES' => $es,
 			$nope
 		] + $countries;
+
+		$room_id = $request->query('room', 0);
 		
 		return view('planning.create', [
 			'rooms' => Room::orderBy('sorting')->get(),
 			'guests' => Guest::orderBy('lastname')->get(),
 			'countries' => $countries,
 			'date' => $date,
+			'room_id' => $room_id,
+			'max_beds' => Room::getMaxBeds(),
 		]);
 	})->name('booking.create');
 
@@ -112,6 +120,7 @@ Route::prefix('planning')->group(function() {
 			'guests' => Guest::orderBy('lastname')->get(),
 			'booking' => $booking,
 			'countries' => $countries,
+			'max_beds' => Room::getMaxBeds(),
 		]);
 	})->name('booking.edit');
 

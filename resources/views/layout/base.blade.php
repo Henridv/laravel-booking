@@ -10,11 +10,11 @@
 
         <link rel="stylesheet" type="text/css" href="/css/app.css">
 
-        <script src="https://use.fontawesome.com/22ece08cb4.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/all.js"></script>
     </head>
     <body>
         @section('nav')
-            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                 <a class="navbar-brand" href="/">{{ config('app.name') }}</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

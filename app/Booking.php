@@ -53,12 +53,20 @@ class Booking extends Model
 
 	public function color() {
 		$name = $this->customer->name;
-		$hash = sha1($name.$this->arrival);
+        $hash = sha1($name);
+		// $hash = crc32($name.$this->arrival);
+
 
 		$r = substr($hash, 0,2);
 		$g = substr($hash, 2,2);
 		$b = substr($hash, 4,2);
-		return '#'.$r.$g.$b;
+        $luma = (float)0.2126 * hexdec($r)
+            + 0.7152 * hexdec($g)
+            + 0.0722 * hexdec($b);
+		
+        return ['color' => '#'.$r.$g.$b, 'luma' => $luma];
+
+        // return self::$colors[$hash%count(self::$colors)];
 	}
 
     public function isNow() {

@@ -70,4 +70,8 @@ class Room extends Model
 		$this->sorting++;
 		$this->save();
 	}
+
+	public static function getMaxBeds() {
+		return Room::max('beds');
+	}
 }

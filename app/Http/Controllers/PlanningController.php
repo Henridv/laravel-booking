@@ -26,8 +26,8 @@ class PlanningController extends Controller
             'comments' => 'nullable|string',
         ]);
 
-        $booking->arrival = $request->input('arrival');
-        $booking->departure = $request->input('departure');
+        $booking->arrival = Carbon::parse($request->input('arrival'));
+        $booking->departure = Carbon::parse($request->input('departure'));
         $booking->customer_id = $request->input('customer');
         $booking->guests = $request->input('guests');
         $booking->basePrice = $request->input('basePrice');
@@ -70,8 +70,8 @@ class PlanningController extends Controller
 
         $booking = new Booking;
 
-        $booking->arrival = $request->input('arrival');
-        $booking->departure = $request->input('departure');
+        $booking->arrival = Carbon::parse($request->input('arrival'));
+        $booking->departure = Carbon::parse($request->input('departure'));
         $booking->customer_id = $request->input('customer');
         $booking->guests = $request->input('guests');
         $booking->basePrice = $request->input('basePrice');
@@ -126,7 +126,6 @@ class PlanningController extends Controller
         $bookings = Booking::where('arrival', '<=', $end)
                         ->where('departure', '>=', $start)
                         ->orderBy('arrival')
-                        //->orderBy('lastname')
                         ->get();
 
         return $bookings;

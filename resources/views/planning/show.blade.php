@@ -21,69 +21,69 @@
     <h3>Boeking info</h3>
     <table class="table table-hover mt-2">
       <tr>
-        <td>Aankomst</td>
+        <th>Aankomst</th>
         <td>{{ $booking->arrival->formatLocalized('%a, %e %b %Y') }}</td>
       </tr>
       <tr>
-        <td>Vertrek</td>
+        <th>Vertrek</th>
         <td>{{ $booking->departure->formatLocalized('%a, %e %b %Y') }}</td>
       </tr>
 
       <tr>
-        <td># gasten</td>
+        <th># gasten</th>
         <td>{{ $booking->guests }}</td>
       </tr>
 
       <tr>
-        <td>Kamer</td>
+        <th>Kamer</th>
         <td>{{ $booking->rooms[0]->name }}</td>
       </tr>
 
       <tr>
-        <td>Basis prijs</td>
+        <th>Basis prijs</th>
         <td>&euro;&nbsp;{{ $booking->basePrice }}</td>
       </tr>
 
       <tr>
-        <td>Korting</td>
+        <th>Korting</th>
         <td>{{ $booking->discount }}&nbsp;%</td>
       </tr>
 
       <tr>
-        <td>Voorschot</td>
+        <th>Voorschot</th>
         <td>&euro;&nbsp;{{ $booking->deposit }}</td>
       </tr>
 
       <tr>
-        <td>Opmerkingen</td>
+        <th>Opmerkingen</th>
         <td>{!! nl2br($booking->comments) !!}</td>
       </tr>
     </table>
-    <a href="{{ route('booking.delete', $booking) }}" type="submit" class="btn btn-danger">Verwijder boeking</a>
-    <a href="{{ route('booking.edit', $booking) }}" type="submit" class="btn btn-primary float-right">Aanpassen</a>
+    <a href="{{ route('booking.delete', $booking) }}" class="btn btn-danger">Verwijder boeking</a>
+    <a href="{{ route('booking.edit', $booking) }}" class="btn btn-primary float-right">Aanpassen</a>
   </div>
   <div class="col-sm">
     <h3>Boeker</h3>
     <table class="table table-hover mt-2">
       <tr>
-        <td>Naam</td>
+        <th>Naam</th>
         <td>{{ $booking->customer->name }}</td>
       </tr>
       <tr>
-        <td>E-mail</td>
-        <td>{{ $booking->customer->email }}</td>
+        <th>E-mail</th>
+        <td><a href="mailto:{{ $booking->customer->email }}">{{ $booking->customer->email }}</a></td>
       </tr>
       <tr>
-        <td>GSM</td>
-        <td>{{ $booking->customer->phone }}</td>
+        <th>GSM</th>
+        <td><a href="tel:{{ $booking->customer->phone }}">{{ $booking->customer->phone }}</a></td>
       </tr>
       <tr>
-        <td>Land</td>
+        <th>Land</th>
         <td>{{ $booking->customer->country_str }}</td>
       </tr>
     </table>
     {{-- <a href="{{ route('booking.delete', $booking) }}" type="submit" class="btn btn-danger">Verwijder boeking</a> --}}
-    <a href="{{ route('guest.edit', [$booking, $booking->customer]) }}" type="submit" class="btn btn-primary float-right">Aanpassen</a>
+    <a href="{{ route('guest.edit', [$booking, $booking->customer]) }}" class="btn btn-primary float-right">Aanpassen</a>
   </div>
 </div>
 @endsection
