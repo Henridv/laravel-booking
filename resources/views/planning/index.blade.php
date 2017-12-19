@@ -72,8 +72,8 @@
     <tr class="striped">
       <td class="text-center" rowspan="{{ $room->beds }}"><span class="roomname">{{ $room->name }}</span></td>
       @for($i=0; $i<$room->beds; $i++)
-        @if ($i>0) <tr> @endif
-        <td>bed {{ $i+1 }}</td>
+        {!! ($i>0) ? '<tr>' : '' !!}
+        <td><i class="fas fa-bed" title="bed {{ $i+1 }}"></i></td>
         @for($d=0; $d<7; $d++)
           @php $date = $dates[$d]; @endphp
           @if(isset($room->bookings) && ($booking = $room->hasBooking($date['date'], $i+1)))

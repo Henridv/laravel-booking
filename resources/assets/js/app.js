@@ -123,11 +123,11 @@ var datepicker_options = {
 	format: "dd-mm-yyyy",
     weekStart: 6,
     maxViewMode: 2,
-    // todayBtn: "linked",
     keyboardNavigation: false,
     autoclose: true,
-    todayHighlight: true,
     language: "nl-BE",
 };
 $('[type=date]').attr('type','text').datepicker(datepicker_options);
+
+datepicker_options.inputs = $('.actual_range');
 $('.input-group.date').attr('type','text').datepicker(datepicker_options);

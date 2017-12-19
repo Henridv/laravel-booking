@@ -54,6 +54,15 @@ td.booked {
   color: white;
 }
 
+.day__now {
+  background-color: $gray-300;
+  // color: white;
+}
+.striped {
+  // background-color: rgba(0,0,0,.05);
+  border-top: 2px solid $gray-600;
+}
+
 #planning__data {
   // position: absolute;
   // left: 0;
@@ -86,15 +95,6 @@ td.booked {
   td.booked.reversed a {
     color: black;
     text-shadow: 0 0 2px #fff;
-  }
-
-  .day__now {
-    background-color: $gray-300;
-    // color: white;
-  }
-  .striped {
-    // background-color: rgba(0,0,0,.05);
-    border-top: 2px solid $gray-600;
   }
 }
 

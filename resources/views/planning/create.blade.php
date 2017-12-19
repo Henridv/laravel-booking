@@ -25,7 +25,7 @@
       <div class="form-group">
         <label for="arrivalInput">Aankomst</label>
         <div class="input-group date">
-          <input type="date" class="form-control" name="arrival" id="arrivalInput" autocomplete="off" required
+          <input type="date" class="form-control actual_range" name="arrival" id="arrivalInput" autocomplete="off" required
             @if(isset($booking)) value="{{ $booking->arrival->format('d-m-Y') }}"
             @elseif(isset($date)) value="{{ $date->format('d-m-Y') }}"
             @endif>
@@ -35,7 +35,7 @@
       <div class="form-group">
         <label for="departureInput">Vertrek</label>
         <div class="input-group date">
-          <input type="date" class="form-control" name="departure" id="departureInput" autocomplete="off" required
+          <input type="date" class="form-control actual_range" name="departure" id="departureInput" autocomplete="off" required
             @if(isset($booking)) value="{{ $booking->departure->format('d-m-Y') }}"
             @elseif(isset($date)) value="{{ $date->addWeek()->format('d-m-Y') }}"
             @endif>
