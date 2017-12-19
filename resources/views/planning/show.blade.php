@@ -55,6 +55,17 @@
       </tr>
 
       <tr>
+        <th>Externe booking (booking.com,...)</th>
+        <td>
+          @if ($booking->ext_booking)
+          ja
+          @else
+          nee
+          @endif
+        </td>
+      </tr>
+
+      <tr>
         <th>Opmerkingen</th>
         <td>{!! nl2br($booking->comments) !!}</td>
       </tr>

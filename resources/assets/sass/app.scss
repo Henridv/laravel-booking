@@ -26,6 +26,10 @@ h1 {
   width: 300px !important;
 }
 
+.datepicker {
+  z-index: 1002;
+}
+
 table.floatThead-table {
   border-top: none;
   border-bottom: none;

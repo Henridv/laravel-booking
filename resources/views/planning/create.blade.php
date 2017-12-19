@@ -96,8 +96,8 @@
       </div>
       <div class="form-group">
         <label class="form-check-label">
-          <input class="form-check-input" name="isyes" type="checkbox" value="yes" @if(isset($booking) && !$booking->white) checked @endif>
-          Is yes?
+          <input class="form-check-input" name="ext_booking" type="checkbox" value="yes" @if(isset($booking) && $booking->ext_booking) checked @endif>
+          Externe boeking? (booking.com,&hellip;)
         </label>
       </div>
     </div>

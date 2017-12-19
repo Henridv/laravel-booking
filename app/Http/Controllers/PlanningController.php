@@ -36,7 +36,7 @@ class PlanningController extends Controller
         $booking->deposit = $request->input('deposit');
         $booking->comments = $request->input('comments');
 
-        $booking->white = ("no" === $request->input('isyes', 'no'));
+        $booking->ext_booking = ("no" !== $request->input('ext_booking', 'no'));
 
         $booking->rooms()->detach();
             $room = Room::find($request->input('room'));
@@ -80,7 +80,7 @@ class PlanningController extends Controller
         $booking->deposit = $request->input('deposit');
         $booking->comments = $request->input('comments');
 
-        $booking->white = ("no" === $request->input('isyes', 'no'));
+        $booking->ext_booking = ("no" !== $request->input('ext_booking', 'no'));
 
         $room = Room::find($request->input('room'));
         $beds = $room->findFreeBeds($booking);
