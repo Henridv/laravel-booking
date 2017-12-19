@@ -20,9 +20,10 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarColor01">
+                    @if (!Auth::guest())
                     <ul class="navbar-nav mr-auto">
-                      <li class="nav-item @if (strstr('/', Request::path())) active @endif">
-                        <a class="nav-link" href="{{ route('welcome') }}">Home</a>
+                        <li class="nav-item @if (strstr('/', Request::path())) active @endif">
+                            <a class="nav-link" href="{{ route('welcome') }}">Home</a>
                         </li>
                         <li class="nav-item @if (strstr('planning', Request::path())) active @endif">
                             <a class="nav-link" href="{{ route('planning') }}">Planning</a>
@@ -33,11 +34,23 @@
                         <li class="nav-item @if (strstr('extras', Request::path())) active @endif">
                             <a class="nav-link" href="{{ route('extra') }}">Extra's</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('/logout') }}"
+                                onclick="event.preventDefault();
+                                         document.getElementById('logout-form').submit();">
+                                Logout
+                            </a>
+
+                            <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                                {{ csrf_field() }}
+                            </form>
+                        </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0">
                         <input class="form-control mr-sm-2" placeholder="Zoek boeking..." type="text">
                         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Zoek</button>
                     </form>
+                    @endif
                 </div>
             </nav>
         @show
