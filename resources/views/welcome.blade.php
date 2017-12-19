@@ -16,10 +16,16 @@
   </thead>
   <tbody>
     @foreach($bookings as $booking)
-    <tr @if ($booking->isNow()) class="booking__now" style="background-color: {{$booking->color()['color'] }}!important" @endif>
+    <tr @if ($booking->isNow())
+      class="booking__now @if ($booking->color()['luma'] > 180.0) reversed @endif"
+      style="background-color: {{$booking->color()['color'] }}" @endif>
       <td>{{ $booking->arrival->format('d/m/Y') }}</td>
       <td>{{ $booking->departure->format('d/m/Y') }}</td>
-      <td>{{ $booking->customer->name }}</td>
+      <td>
+        <a href="{{ route('planning', ['date' => $booking->arrival->toDateString()]) }}">
+          {{ $booking->customer->name }}
+        </a>
+      </td>
       <td>{{ $booking->customer->country_str }}</td>
       <td>{{ $booking->guests }}</td>
       <td>{{ $booking->rooms[0]->name }}</td>
@@ -32,22 +38,28 @@
 <table class="table table-hover">
   <thead>
     <tr>
+      <th>Van</th>
       <th>Tot</th>
       <th>Boeker</th>
       <th># gasten</th>
       <th>Kamer</th>
       <th>Prijs</th>
-      <th>Betaald?</th>
   </thead>
   <tbody>
     @foreach($leaving as $booking)
-    <tr @if ($booking->isNow()) class="booking__now" style="background-color: {{$booking->color()['color'] }}!important" @endif>
+    <tr @if ($booking->isNow())
+      class="booking__now @if ($booking->color()['luma'] > 180.0) reversed @endif"
+      style="background-color: {{$booking->color()['color'] }}" @endif>
+      <td>{{ $booking->arrival->format('d/m/Y') }}</td>
       <td>{{ $booking->departure->format('d/m/Y') }}</td>
-      <td>{{ $booking->customer->name }}</td>
+      <td>
+        <a href="{{ route('planning', ['date' => $booking->arrival->toDateString()]) }}">
+          {{ $booking->customer->name }}
+        </a>
+      </td>
       <td>{{ $booking->guests }}</td>
       <td>{{ $booking->rooms[0]->name }}</td>
       <td>&euro;&nbsp;{{ $booking->basePrice * (1-$booking->discount) }}</td>
-      <td><a href="{{ route('welcome') }}" class="btn btn-primary">Betalen</a></td>
     </tr>
     @endforeach
   </tbody>

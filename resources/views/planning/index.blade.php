@@ -6,9 +6,9 @@
 <div class="row">
   <div class="col-sm d-flex justify-content-between">
     <div>
-    <div class="btn-group mb-2" role="group">
-      <a href="{{ route('planning') }}?date={{ $dates[0]['date']->copy()->subWeek()->toDateString() }}" class="btn btn-primary"><i class="fa fa-chevron-left"></i></a>
-      <a href="{{ route('planning') }}?date={{ $dates[0]['date']->copy()->addWeek()->toDateString() }}" class="btn btn-primary"><i class="fa fa-chevron-right"></i></a>
+    <div class="btn-group mb-2 btns__week" role="group">
+      <a href="{{ route('planning') }}?date={{ $dates[0]['date']->copy()->subWeek()->toDateString() }}" class="btn btn-primary" id="btn__prev"><i class="fa fa-chevron-left"></i></a>
+      <a href="{{ route('planning') }}?date={{ $dates[0]['date']->copy()->addWeek()->toDateString() }}" class="btn btn-primary" id="btn__next"><i class="fa fa-chevron-right"></i></a>
     </div>
 
     <a href="{{ route('planning') }}" class="btn btn-secondary mb-2">Vandaag</a>

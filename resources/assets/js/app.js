@@ -9,8 +9,24 @@ require('./bootstrap');
 require('select2');
 require('./bootstrap-datepicker')
 require('./bootstrap-datepicker.nl-BE.min')
+require('./jquery.floatThead')
 
 var moment = require('moment');
+
+$(function(){
+    $('html').keydown(function(e){
+    	if ($('.btns__week').length > 0) {
+        	if (e.which == 37) {
+        		$("#btn__prev")[0].click();
+        	}
+        	if (e.which == 39) {
+        		$("#btn__next")[0].click();
+        	}
+    	}
+    });
+});
+
+$("#planning__data").floatThead();
 
 $("#arrivalInput").change(function() {
 	var arr_date = moment($(this).val(), "DD-MM-YYYY");

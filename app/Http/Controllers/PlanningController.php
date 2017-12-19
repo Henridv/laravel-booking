@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
 
@@ -129,5 +130,23 @@ class PlanningController extends Controller
                         ->get();
 
         return $bookings;
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->query('search', '');
+        $sql_search = '%'.$search.'%';
+        // DB::enableQueryLog();
+        $bookings = Booking::join('guests', 'guests.id', '=', 'bookings.customer_id')
+                    ->select('bookings.*', 'guests.firstname', 'guests.lastname')
+                    ->where('firstname', 'LIKE', $sql_search)
+                    ->orwhere('lastname', 'LIKE', $sql_search)
+                    ->orwhere(DB::raw('CONCAT(firstname, " ", lastname)'), 'LIKE', $sql_search)
+                    ->orderBy('arrival')
+                    ->get();
+        // dd(DB::getQueryLog());
+        return view('planning.search', [
+            'bookings' => $bookings
+        ]);
     }
 }

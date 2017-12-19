@@ -46,8 +46,9 @@
                             </form>
                         </li>
                     </ul>
-                    <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" placeholder="Zoek boeking..." type="text">
+                    <form action="{{ route('booking.search') }}" method="GET" class="form-inline my-2 my-lg-0">
+                        {{-- {{ csrf_field() }} --}}
+                        <input class="form-control mr-sm-2 search__input" placeholder="Zoek boeking... (min. 3 karakters)" type="text" name="search" value="{{ app('request')->input('search') }}" pattern=".{3,}" title="min. 3 karakters" required>
                         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Zoek</button>
                     </form>
                     @endif

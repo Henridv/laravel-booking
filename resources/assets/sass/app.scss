@@ -11,11 +11,25 @@
 @import "~select2/dist/css/select2";
 @import "~select2-bootstrap-theme/dist/select2-bootstrap";
 
-@import "resources/assets/css/bootstrap-datepicker";
+@import "resources/assets/css/bootstrap-datepicker3";
 
 body {
-  font-family: "Open Sans", sans-serif;
+  // font-family: "Open Sans", sans-serif;
   -webkit-font-smoothing: subpixel-antialiased;
+}
+
+h1 {
+  margin-top: 15px;
+}
+
+.search__input {
+  width: 300px !important;
+}
+
+table.floatThead-table {
+  border-top: none;
+  border-bottom: none;
+  background-color: #FFF;
 }
 
 .table span.roomname {
@@ -42,11 +56,11 @@ td.booked {
   // top: 0;
   // z-index: 1;
   // border: 1px solid transparent;
-
   td {
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
+    padding: 0.50rem 0.75rem;
   }
 
   th.day {
@@ -55,8 +69,8 @@ td.booked {
 
   td a.book__link {
     display: none;
-    margin: -0.75rem;
-    padding: 0.75rem;
+    margin: -0.50rem -0.75rem;
+    padding: 0.50rem 0.75rem;
   }
   td:hover a.book__link {
     display: block;
@@ -65,7 +79,7 @@ td.booked {
     color: white;
     text-shadow: 0 0 2px #000;
   }
-  td.booked.reverse {
+  td.booked.reversed a {
     color: black;
     text-shadow: 0 0 2px #fff;
   }
@@ -81,9 +95,12 @@ td.booked {
 }
 
 tr.booking__now {
-  // background-color: $green !important;
   color: white;
   text-shadow: 0 0 2px #000;
+}
+tr.booking__now.reversed {
+  color: black;
+  text-shadow: 0 0 2px #fff;
 }
 
 .heartbeat {
