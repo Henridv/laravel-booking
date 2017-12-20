@@ -1,0 +1,66 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  h1, nav, input, button, footer, .btn, .btn-group, form {
+    // display: none !important;
+    visibility: hidden;
+  }
+
+  #planning__data, #planning__data * {
+    visibility: visible;
+  }
+
+  #planning__container {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  #planning__data {
+    color: black;
+
+    td {
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      padding: 0.50rem 0.75rem;
+    }
+
+    th.day {
+      width: 11.5%;
+    }
+
+    .striped {
+      border-top: 3px solid black;
+    }
+
+    td a.book__link {
+      display: none;
+      margin: -0.50rem -0.75rem;
+      padding: 0.25rem;
+    }
+    td:hover a.book__link {
+      display: block;
+    }
+    td.booked a {
+      color: black;
+      text-shadow: none;
+    }
+    td.booked.reversed a {
+      color: black;
+      text-shadow: none;
+    }
+  }
+
+  tr.booking__now {
+    color: white;
+    text-shadow: 0 0 2px #000;
+  }
+  tr.booking__now.reversed {
+    color: black;
+    text-shadow: 0 0 2px #fff;
+  }
+
+}

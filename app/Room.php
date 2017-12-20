@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
 
@@ -17,15 +18,17 @@ class Room extends Model
 		return $this->bookings->where('arrival', 'after', Carbon::parse("now"));
 	}
 
-	public function hasBooking(Carbon $date, $bed)
+	public function hasBooking(Carbon $date, $bed = "all")
 	{
-		foreach ($this->bookings as $booking) {
-			if($bed !== $booking->pivot->bed) continue;
-			if($date->between($booking->arrival, $booking->departure->subDay())) {
-				return $booking;
-			}
+		$bookings = $this->bookings()
+			->where('arrival', '<=', $date)
+			->where('departure', '>', $date);
+
+		if ($bed === "all") {
+			return $bookings->get()->groupBy('id');
+		} else {
+			return $bookings->wherePivot('bed', $bed)->first();
 		}
-		return false;
 	}
 
 	public function findFreeBeds(Booking $booking) {

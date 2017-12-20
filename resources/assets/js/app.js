@@ -26,7 +26,17 @@ $(function(){
     });
 });
 
-$("#planning__data").floatThead();
+$("#planning__data").floatThead({
+	responsiveContainer: function($table){
+    	return $table.closest(".table-responsive");
+	},
+});
+
+$("#printBtn").click(function(e) {
+	var reinit = $("#planning__data").floatThead('destroy');
+	window.print();
+	reinit();
+});
 
 $("#arrivalInput").change(function() {
 	var arr_date = moment($(this).val(), "DD-MM-YYYY");

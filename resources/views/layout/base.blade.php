@@ -9,6 +9,7 @@
         <title>{{ config('app.name') }} Booking System</title>
 
         <link rel="stylesheet" type="text/css" href="/css/app.css">
+        <link rel="stylesheet" type="text/css" href="/css/print.css">
 
         <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/all.js"></script>
     </head>
