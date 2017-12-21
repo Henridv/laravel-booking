@@ -78,7 +78,11 @@
     <table class="table table-hover mt-2">
       <tr>
         <th>Naam</th>
-        <td>{{ $booking->customer->name }}</td>
+        <td
+          class="booked {{ $booking->color()['luma'] > 180.0 ? 'reversed' : '' }}"
+          style="background-color: {{ $booking->color()['color'] }}">
+          {{ $booking->customer->name }}
+        </td>
       </tr>
       <tr>
         <th>E-mail</th>

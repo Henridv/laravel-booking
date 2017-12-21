@@ -43,6 +43,15 @@ class AjaxController extends Controller
 			$g->email = $guest['email'];
 			$g->phone = $guest['phone'];
 			$g->country = $guest['country'];
+
+			$name = $g->firstname .' '. $g->lastname;
+			$hash = sha1($name);
+
+			$r = substr($hash, 0,2);
+			$g = substr($hash, 2,2);
+			$b = substr($hash, 4,2);
+			
+			$g->color = '#'.$r.$g.$b;
 			$g->save();
 
 			$guest['id'] = $g->id;

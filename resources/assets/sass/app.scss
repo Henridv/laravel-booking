@@ -40,10 +40,11 @@ table.floatThead-table {
   display: block;
 }
 
-td.booked {
-  // background-color: $red;
-  text-align: center;
-  color: white;
+.table-print {
+  table-layout: fixed;
+  td hr:last-child {
+    display: none;
+  }
 }
 
 #planning__container {
@@ -63,12 +64,16 @@ td.booked {
   border-top: 2px solid $gray-600;
 }
 
+.booked, .booked a {
+  color: white;
+  text-shadow: 0 0 2px #000;
+}
+.booked.reversed, .booked.reversed a {
+  color: black;
+  text-shadow: 0 0 2px #fff;
+}
+
 #planning__data {
-  // position: absolute;
-  // left: 0;
-  // top: 0;
-  // z-index: 1;
-  // border: 1px solid transparent;
   td {
     text-align: center;
     white-space: nowrap;
@@ -88,13 +93,9 @@ td.booked {
   td:hover a.book__link {
     display: block;
   }
-  td.booked a {
-    color: white;
-    text-shadow: 0 0 2px #000;
-  }
-  td.booked.reversed a {
-    color: black;
-    text-shadow: 0 0 2px #fff;
+
+  td.booked {
+    text-align: center;
   }
 }
 
