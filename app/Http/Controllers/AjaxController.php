@@ -35,28 +35,28 @@ class AjaxController extends Controller
 	public function saveGuest(Request $request)
 	{
 		if ($request->ajax()) {
-			$guest = $request->input('guest');
+			$data = $request->input('guest');
 
-			$g = new Guest;
-			$g->firstname = $guest['firstname'];
-			$g->lastname = $guest['lastname'];
-			$g->email = $guest['email'];
-			$g->phone = $guest['phone'];
-			$g->country = $guest['country'];
+			$guest = new Guest;
+			$guest->firstname = $data['firstname'];
+			$guest->lastname = $data['lastname'];
+			$guest->email = $data['email'];
+			$guest->phone = $data['phone'];
+			$guest->country = $data['country'];
 
-			$name = $g->firstname .' '. $g->lastname;
+			$name = $guest->firstname .' '. $guest->lastname;
 			$hash = sha1($name);
 
 			$r = substr($hash, 0,2);
 			$g = substr($hash, 2,2);
 			$b = substr($hash, 4,2);
 			
-			$g->color = '#'.$r.$g.$b;
-			$g->save();
+			$guest->color = '#'.$r.$g.$b;
+			$guest->save();
 
-			$guest['id'] = $g->id;
+			$data['id'] = $guest->id;
 			
-			return json_encode($guest);
+			return json_encode($data);
 		} else {
 			return Redirect::to('/');
 		}
