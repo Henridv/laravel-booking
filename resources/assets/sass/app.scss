@@ -99,11 +99,11 @@ table.floatThead-table {
   }
 }
 
-tr.booking__now {
+tr.booking__now, tr.booking__now a {
   color: white;
   text-shadow: 0 0 2px #000;
 }
-tr.booking__now.reversed {
+tr.booking__now.reversed, tr.booking__now.reversed a {
   color: black;
   text-shadow: 0 0 2px #fff;
 }
