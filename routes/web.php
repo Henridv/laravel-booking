@@ -44,12 +44,12 @@ Route::middleware(['auth'])->group(function() {
 
         Route::get('/', function(Request $request) {
             $rooms = Room::orderBy('sorting')->get();
-            
+
             // setlocale(LC_TIME, app()->getlocale());
             Carbon::setWeekStartsAt(Carbon::SATURDAY);
             $date = (new Carbon($request->query('date', "now")))->startOfWeek();
             $dates = [];
-            for ($i=0; $i < 7; $i++) { 
+            for ($i=0; $i < 7; $i++) {
                 $dates[$i] = [
                     'day' => $date->formatLocalized('%a'),
                     'date_str' => $date->format('d/m/Y'),
@@ -65,10 +65,10 @@ Route::middleware(['auth'])->group(function() {
             $date = Carbon::parse($request->input('goto_date', "now"))->toDateString();
             return redirect()->route('planning', ['date' => $date]);
         })->name('planning.change_date');
-        
+
         Route::get('nieuw', function(Request $request) {
             $countries = CountryList::all('nl_BE');
-            
+
             Carbon::setWeekStartsAt(Carbon::SATURDAY);
             $date = (new Carbon($request->query('date', "now")));
 
@@ -88,7 +88,7 @@ Route::middleware(['auth'])->group(function() {
             ] + $countries;
 
             $room_id = $request->query('room', 0);
-            
+
             return view('planning.create', [
                 'rooms' => Room::orderBy('sorting')->get(),
                 'guests' => Guest::orderBy('lastname')->get(),
@@ -103,7 +103,7 @@ Route::middleware(['auth'])->group(function() {
 
         Route::get('edit/{booking}', function(Booking $booking) {
             $countries = CountryList::all(app()->getLocale());
-            
+
             // move most common picks to front of array
             $be = $countries['BE'];
             $fr = $countries['FR'];
@@ -129,21 +129,21 @@ Route::middleware(['auth'])->group(function() {
         })->name('booking.edit');
 
         Route::post('edit/{booking}', 'PlanningController@editBooking');
-            
+
         Route::get('{booking}', function(App\Booking $booking) {
-            
+
             return view('planning.show', ["booking" => $booking]);
         })->name('booking.show')->where('booking', '[0-9]+');;
 
         Route::get('del/{booking}', function(App\Booking $booking) {
             $booking->delete();
-            
+
             return redirect()->route('planning');
         })->name('booking.delete');
 
         Route::get('getGuests', 'AjaxController@getGuests')
             ->name('booking.ajax.guests');
-            
+
         Route::post('saveGuest', 'AjaxController@saveGuest')
             ->name('booking.ajax.guest.save');
 
@@ -155,7 +155,7 @@ Route::middleware(['auth'])->group(function() {
 
         Route::get('edit/{booking}/{guest}', function(App\Booking $booking, App\Guest $guest) {
             $countries = CountryList::all(app()->getLocale());
-            
+
             // move most common picks to front of array
             $be = $countries['BE'];
             $fr = $countries['FR'];
@@ -182,7 +182,7 @@ Route::middleware(['auth'])->group(function() {
 
         Route::get('del/{guest}', function(App\Guest $guest) {
             $guest->delete();
-            
+
             return redirect()->route('planning');
         })->name('guest.delete');
     });
@@ -196,14 +196,16 @@ Route::middleware(['auth'])->group(function() {
         Route::get('toevoegen', function() {
             return view('rooms.add');
         })->name('room.add');
-        
+
         Route::post('toevoegen', function(Request $request) {
             $name = $request->input('name');
             $beds = (int)$request->input('beds');
+            $layout = array_map('intval', explode(',', $request->input('layout')));
 
             $r = new Room;
             $r->name = $name;
             $r->beds = $beds;
+            $r->layout = $layout;
             $r->save();
 
             return redirect()->route('rooms');
@@ -216,9 +218,11 @@ Route::middleware(['auth'])->group(function() {
         Route::post('edit/{room}', function(App\Room $room, Request $request) {
             $name = $request->input('name');
             $beds = (int)$request->input('beds');
+            $layout = array_map('intval', explode(',', $request->input('layout')));
 
             $room->name = $name;
             $room->beds = $beds;
+            $room->layout = $layout;
             $room->save();
 
             return redirect()->route('rooms');

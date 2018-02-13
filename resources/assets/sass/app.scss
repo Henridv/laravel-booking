@@ -97,6 +97,10 @@ table.floatThead-table {
   td.booked {
     text-align: center;
   }
+
+  tr.layout-switch {
+    border-top: 2px solid $gray-500;
+  }
 }
 
 tr.booking__now, tr.booking__now a {
@@ -191,4 +195,3 @@ tr.booking__now.reversed, tr.booking__now.reversed a {
             animation-timing-function: ease-out;
   }
 }
-

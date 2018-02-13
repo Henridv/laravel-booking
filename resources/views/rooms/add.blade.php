@@ -25,6 +25,10 @@
         @endfor
       </select>
     </div>
+    <div class="form-group">
+      <label for="layoutInput">Indeling</label>
+      <input class="form-control" name="layout" id="layoutInput" placeholder="Indeling" autocomplete="off" type="text" required @if(isset($room)) value="{{ $room->layoutStr }}" @endif>
+    </div>
     @if(isset($room))
       <button type="submit" class="btn btn-primary">Opslaan!</button>
     @else

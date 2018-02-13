@@ -9,9 +9,20 @@ use Carbon\Carbon;
 
 class Room extends Model
 {
+    /**
+     * The attributes that should be cast to native types.
+     */
+    protected $casts = [
+        'layout' => 'array',
+	];
 
 	public function bookings() {
 		return $this->belongsToMany('App\Booking')->withPivot('bed');
+	}
+
+	// getter for layout
+	public function getLayoutStrAttribute() {
+		return implode(', ',$this->layout);
 	}
 
 	public function getCurrentBookings() {
@@ -39,7 +50,7 @@ class Room extends Model
 			->where('arrival', '<', $departure)
 			->where('departure', '>', $arrival)
 			->get();
-		
+
 		$beds_taken = [];
 		foreach ($overlap as $o) {
 			$beds_taken[] = $o->pivot->bed;

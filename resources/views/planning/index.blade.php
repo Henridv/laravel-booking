@@ -16,7 +16,7 @@
     <form action="{{ route('planning.change_date') }}" class="form-inline d-inline-flex  justify-content-center mb-2" method="POST">
       {{ csrf_field() }}
       <input class="form-control mr-2" name="goto_date"
-        autocomplete="off" type="date" required 
+        autocomplete="off" type="date" required
         value="{{ $dates[0]['date']->format('d-m-Y') }}">
       <button class="btn btn-success my-2 my-sm-0" type="submit">Ga</button>
     </form>
@@ -42,12 +42,14 @@
     </tr>
   </thead>
   <tbody>
-    @php $row=1 @endphp
     @foreach($rooms as $room)
     <tr class="striped">
       <td class="text-center" rowspan="{{ $room->beds }}"><span class="roomname">{{ $room->name }}</span></td>
-      @for($i=0; $i<$room->beds; $i++)
-        {!! ($i>0) ? '<tr>' : '' !!}
+      @foreach ($room->layout as $l)
+      @for($i=0; $i<$l; $i++)
+        @if (!($loop->first && $i===0))
+          <tr @if (!$loop->first && $i===0) class="layout-switch" @endif>
+        @endif
         <td><i class="fas fa-bed" title="bed {{ $i+1 }}"></i>&nbsp;</td>
         @for($d=0; $d<7; $d++)
           @php $date = $dates[$d]; @endphp
@@ -65,14 +67,15 @@
             @php $d += ($booking->toShow($dates)-1) @endphp
           @else
             <td @php echo ($i == 0) ? 'class="striped"' : '' @endphp>
-              <a href="{{ route('booking.create', ['date' => $date['date']->toDateString(), 'room' => $room->id]) }}" class="book__link">
+              <a href="{{ route('booking.create', ['date' => $date['date']->toDateString(), 'room' => $room->id, 'layout' => $loop->index]) }}" class="book__link">
                 <i class="fas fa-plus"></i>
               </a>
             </td>
           @endif
         @endfor
         </tr>
-      @endfor
+      @endfor {{-- beds --}}
+      @endforeach {{-- layout --}}
     @endforeach
   </tbody>
 </table>
