@@ -45,13 +45,12 @@
     @foreach($rooms as $room)
     <tr class="striped">
       <td class="text-center" rowspan="{{ $room->beds }}"><span class="roomname">{{ $room->name }}</span></td>
-      @foreach ($room->layout as $l)
-      @for($i=0; $i<$l; $i++)
-        @if (!($loop->first && $i===0))
-          <tr @if (!$loop->first && $i===0) class="layout-switch" @endif>
+      @for($i=0; $i<$room->beds; $i++) {{-- loop through beds --}}
+        @if ($i>0)
+          <tr @if (in_array($i, $room->layout_splits)) class="layout-split" @endif>
         @endif
         <td><i class="fas fa-bed" title="bed {{ $i+1 }}"></i>&nbsp;</td>
-        @for($d=0; $d<7; $d++)
+        @for($d=0; $d<7; $d++) {{-- loop through days for this bed --}}
           @php $date = $dates[$d]; @endphp
           @if(isset($room->bookings) && ($booking = $room->hasBooking($date['date'], $i+1)))
             <td
@@ -67,7 +66,7 @@
             @php $d += ($booking->toShow($dates)-1) @endphp
           @else
             <td @php echo ($i == 0) ? 'class="striped"' : '' @endphp>
-              <a href="{{ route('booking.create', ['date' => $date['date']->toDateString(), 'room' => $room->id, 'layout' => $loop->index]) }}" class="book__link">
+              <a href="{{ route('booking.create', ['date' => $date['date']->toDateString(), 'room' => $room->id]) }}" class="book__link">
                 <i class="fas fa-plus"></i>
               </a>
             </td>
@@ -75,7 +74,6 @@
         @endfor
         </tr>
       @endfor {{-- beds --}}
-      @endforeach {{-- layout --}}
     @endforeach
   </tbody>
 </table>

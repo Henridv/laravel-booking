@@ -88,6 +88,7 @@ Route::middleware(['auth'])->group(function() {
             ] + $countries;
 
             $room_id = $request->query('room', 0);
+            $part = $request->query('part', -1);
 
             return view('planning.create', [
                 'rooms' => Room::orderBy('sorting')->get(),
@@ -95,6 +96,7 @@ Route::middleware(['auth'])->group(function() {
                 'countries' => $countries,
                 'date' => $date,
                 'room_id' => $room_id,
+                'part' => $part,
                 'max_beds' => Room::getMaxBeds(),
             ]);
         })->name('booking.create');
@@ -124,6 +126,9 @@ Route::middleware(['auth'])->group(function() {
                 'guests' => Guest::orderBy('lastname')->get(),
                 'booking' => $booking,
                 'countries' => $countries,
+                'room_id' => $booking->rooms[0]->id,
+                'part' => $booking->rooms[0]->properties->options['part'],
+                'options' => $booking->rooms[0]->properties->options,
                 'max_beds' => Room::getMaxBeds(),
             ]);
         })->name('booking.edit');

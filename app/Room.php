@@ -17,12 +17,26 @@ class Room extends Model
 	];
 
 	public function bookings() {
-		return $this->belongsToMany('App\Booking')->withPivot('bed');
+        return $this->belongsToMany('App\Booking')
+            ->as('properties')
+            ->withPivot(['bed', 'options'])
+            ->using('App\BookingProperties');
 	}
 
 	// getter for layout
 	public function getLayoutStrAttribute() {
 		return implode(', ',$this->layout);
+	}
+
+	// getter for cumulative layout
+	public function getLayoutSplitsAttribute() {
+		$cumul = [];
+		$total = 0;
+		foreach ($this->layout as $l) {
+			$total += $l;
+			$cumul[] = $total;
+		}
+		return $cumul;
 	}
 
 	public function getCurrentBookings() {
@@ -42,23 +56,33 @@ class Room extends Model
 		}
 	}
 
-	public function findFreeBeds(Booking $booking) {
-		$arrival = $booking->arrival;
-		$departure = $booking->departure;
+	public function findFreeBeds($arrival, $departure, $part = -1) {
 
+		// find bookings in this room with overlapping dates
 		$overlap = $this->bookings()
 			->where('arrival', '<', $departure)
 			->where('departure', '>', $arrival)
 			->get();
 
+		// which beds are taken
 		$beds_taken = [];
 		foreach ($overlap as $o) {
-			$beds_taken[] = $o->pivot->bed;
+			$beds_taken[] = $o->properties->bed;
 		}
 
-		$beds = array_values(array_diff(range(1,$this->beds), $beds_taken));
+		// get all beds in specific part
+		$all_beds = range(1,$this->beds);
+		if ($part !== -1) {
+			$beds_in_part = [];
+			foreach($this->layout as $l) {
+				$beds_in_part[] = array_splice($all_beds, 0, $l);
+			}
+		}
+		$potential = ($part === -1) ? $all_beds : $beds_in_part[$part];
 
-		return $beds;
+		$beds_available = array_values(array_diff($potential, $beds_taken));
+
+		return $beds_available;
 	}
 
 	public function moveUp() {

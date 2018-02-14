@@ -19,7 +19,7 @@ class PlanningController extends Controller
             'arrival' => 'required|date',
             'departure' => 'required|date|after:arrival',
             'customer' => 'required|exists:guests,id',
-            'room' => 'required|exists:rooms,id',
+            'room' => 'required',
             'basePrice' => 'required|integer|min:0',
             'discount' => 'required|integer|min:0|max:100',
             'deposit' => 'required|integer|min:0',
@@ -39,18 +39,28 @@ class PlanningController extends Controller
         $booking->ext_booking = ("no" !== $request->input('ext_booking', 'no'));
 
         $booking->rooms()->detach();
-            $room = Room::find($request->input('room'));
-            $beds = $room->findFreeBeds($booking);
 
-            if (count($beds) >= $booking->guests) {
-                $booking->save();
-                for ($i=0; $i<count($beds) && $i<$booking->guests; $i++) {
-                    $booking->rooms()->save($room, ['bed' => $beds[$i]]);
-                }
-            } else {
-                echo 'ERROOOOOOOR';
-                die();
+        $placement = explode(';', $request->input('room'));
+        $room_id = (int)$placement[0];
+        $part = count($placement) > 1 ? (int)$placement[1] : -1;
+
+        $room = Room::find($room_id);
+        $beds = $room->findFreeBeds($booking->arrival, $booking->departure, $part);
+
+        $options['part'] = $part;
+        $options['asWhole'] = $part === -1 ? true : false;
+
+        if (count($beds) >= $booking->guests) {
+            $booking->save();
+            for ($i=0; $i<count($beds) && $i<$booking->guests; $i++) {
+                $booking->rooms()->save($room, ['bed' => $beds[$i], 'options' => $options]);
             }
+        } else {
+            return redirect()
+                    ->route('booking.edit', $booking)
+                    ->with('error', 'Geen voldoende bedden')
+                    ->withInput();
+        }
 
         return redirect()->route('booking.show', $booking);
     }
@@ -61,7 +71,7 @@ class PlanningController extends Controller
             'arrival' => 'required|date',
             'departure' => 'required|date|after:arrival',
             'customer' => 'required|exists:guests,id',
-            'room' => 'required|exists:rooms,id',
+            'room' => 'required',
             'basePrice' => 'required|integer|min:0',
             'discount' => 'required|integer|min:0|max:100',
             'deposit' => 'required|integer|min:0',
@@ -82,17 +92,26 @@ class PlanningController extends Controller
 
         $booking->ext_booking = ("no" !== $request->input('ext_booking', 'no'));
 
-        $room = Room::find($request->input('room'));
-        $beds = $room->findFreeBeds($booking);
+        $placement = explode(';', $request->input('room'));
+        $room_id = (int)$placement[0];
+        $part = count($placement) > 1 ? (int)$placement[1] : -1;
+
+        $room = Room::find($room_id);
+        $beds = $room->findFreeBeds($booking->arrival, $booking->departure, $part);
+
+        $options['part'] = $part;
+        $options['asWhole'] = $part === -1 ? true : false;
 
         if (count($beds) >= $booking->guests) {
             $booking->save();
             for ($i=0; $i<count($beds) && $i<$booking->guests; $i++) {
-                $booking->rooms()->save($room, ['bed' => $beds[$i]]);
+                $booking->rooms()->save($room, ['bed' => $beds[$i], 'options' => $options]);
             }
         } else {
-            echo 'ERROOOOOOOR';
-            die();
+            return redirect()
+                    ->route('booking.create')
+                    ->with('error', 'Geen voldoende bedden')
+                    ->withInput();
         }
 
         return redirect()

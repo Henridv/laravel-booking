@@ -22,12 +22,15 @@ class Booking extends Model
 		return $this->belongsTo('App\Guest');
 	}
 
-	/*
-	 * get booked room(s)
-	 */
-	public function rooms() {
-		return $this->belongsToMany('App\Room')->withPivot('bed');
-	}
+    /*
+     * get booked room(s)
+     */
+    public function rooms() {
+        return $this->belongsToMany('App\Room')
+            ->as('properties')
+            ->withPivot(['bed', 'options'])
+            ->using('App\BookingProperties');
+    }
 
 	public function days() {
 		return $this->arrival->diffInDays($this->departure);

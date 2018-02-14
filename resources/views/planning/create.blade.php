@@ -12,6 +12,13 @@
         </ul>
     </div>
 @endif
+@if (session('error'))
+  <div class="alert alert-danger">
+    <ul>
+      <li>{{ session('error') }}</li>
+    </ul>
+  </div>
+@endif
 
 @if(isset($booking))
   <form action="{{ route('booking.edit', $booking->id) }}" method="POST">
@@ -26,7 +33,8 @@
         <label for="arrivalInput">Aankomst</label>
         <div class="input-group date">
           <input type="date" class="form-control actual_range" name="arrival" id="arrivalInput" autocomplete="off" required
-            @if(isset($booking)) value="{{ $booking->arrival->format('d-m-Y') }}"
+            @if(old('arrival')) value="{{ old('arrival') }}"
+            @elseif(isset($booking)) value="{{ $booking->arrival->format('d-m-Y') }}"
             @elseif(isset($date)) value="{{ $date->format('d-m-Y') }}"
             @endif>
           <span class="input-group-addon"><i class="fas fa-calendar-alt"></i></span>
@@ -36,7 +44,8 @@
         <label for="departureInput">Vertrek</label>
         <div class="input-group date">
           <input type="date" class="form-control actual_range" name="departure" id="departureInput" autocomplete="off" required
-            @if(isset($booking)) value="{{ $booking->departure->format('d-m-Y') }}"
+            @if(old('departure')) value="{{ old('departure') }}"
+            @elseif(isset($booking)) value="{{ $booking->departure->format('d-m-Y') }}"
             @elseif(isset($date)) value="{{ $date->addWeek()->format('d-m-Y') }}"
             @endif>
           <span class="input-group-addon"><i class="fas fa-calendar-alt"></i></span>
@@ -48,7 +57,9 @@
           <option></option>
           <option value="new-guest">Nieuwe gast...</option>
           @foreach($guests as $guest)
-            <option @if(isset($booking) && $booking->customer_id == $guest->id) selected @endif value="{{ $guest->id }}">{{ $guest->name }}</option>
+            <option
+              @if(old('customer') == $guest->id) selected
+              @elseif(isset($booking) && $booking->customer_id == $guest->id) selected @endif value="{{ $guest->id }}">{{ $guest->name }}</option>
           @endforeach
         </select>
       </div>
@@ -56,7 +67,10 @@
         <label for="guestsSelect"># gasten</label>
         <select class="form-control" name="guests" id="guestsSelect">
           @for($i=0; $i<$max_beds; $i++)
-            <option @if(isset($booking) && $booking->guests == ($i+1)) selected @endif>{{ $i+1 }}</option>
+            <option
+              @if(old('guests') == $i+1) selected
+              @elseif(isset($booking) && $booking->guests == ($i+1)) selected
+              @endif>{{ $i+1 }}</option>
           @endfor
         </select>
       </div>
@@ -65,11 +79,19 @@
       <div class="form-group">
         <label for="roomSelect">Kamer</label>
         <select class="form-control" name="room" id="roomSelect">
-          @foreach($rooms as $room)
-            <option
-            @if(isset($booking) && $booking->rooms[0]->id == $room->id) selected @endif
-            @if(isset($room_id) && $room_id == $room->id) selected @endif
+          @foreach($rooms as $room) {{-- all rooms --}}
+            <option {{-- room as whole --}}
+            @if((int)old('room') === $room->id) selected
+            @elseif($part === -1 && isset($room_id) && $room_id == $room->id) selected @endif
             value="{{ $room->id }}">{{ $room->name }}</option>
+            @if (count($room->layout) > 1)
+              @foreach($room->layout as $l)
+                <option {{-- "sub" rooms --}}
+                @if(old('room') === $room->id.';'.$loop->index) selected
+                @elseif(isset($room_id) && isset($part) && $room_id == $room->id && $part == $loop->index) selected @endif
+                value="{{ $room->id }};{{ $loop->index }}">-- Kamer {{ $loop->iteration }}</option>
+              @endforeach
+            @endif
           @endforeach
         </select>
       </div>
@@ -77,26 +99,37 @@
         <label for="basePriceInput">Basis prijs</label>
         <div class="input-group">
           <span class="input-group-addon">€</span>
-          <input class="form-control" name="basePrice" id="basePriceInput" autocomplete="off" type="number" required @if(isset($booking)) value="{{ $booking->basePrice }}" @else value="0" @endif min="0">
+          <input class="form-control" name="basePrice" id="basePriceInput" autocomplete="off" type="number" required min="0"
+          @if(isset($booking)) value="{{ $booking->basePrice }}"
+          @else value="{{ old('basePrice', 0) }}"
+          @endif >
         </div>
       </div>
       <div class="form-group">
         <label for="discountInput">Korting</label>
         <div class="input-group">
           <span class="input-group-addon">%</span>
-          <input class="form-control" name="discount" id="discountInput" autocomplete="off" type="number" required @if(isset($booking)) value="{{ $booking->discount }}" @else value="0" @endif min="0" max="100">
+          <input class="form-control" name="discount" id="discountInput" autocomplete="off" type="number" required min="0" max="100"
+            @if(isset($booking)) value="{{ $booking->discount }}"
+            @else value="{{ old('discount', 0) }}"
+            @endif>
         </div>
       </div>
       <div class="form-group">
         <label for="depositInput">Voorschot</label>
         <div class="input-group">
           <span class="input-group-addon">€</span>
-          <input class="form-control" name="deposit" id="depositInput" autocomplete="off" type="number" required @if(isset($booking)) value="{{ $booking->deposit }}" @else value="0" @endif min="0">
+          <input class="form-control" name="deposit" id="depositInput" autocomplete="off" type="number" required min="0"
+            @if(isset($booking)) value="{{ $booking->deposit }}"
+            @else value="{{ old('deposit', 0) }}"
+            @endif>
         </div>
       </div>
       <div class="form-group">
         <label class="form-check-label">
-          <input class="form-check-input" name="ext_booking" type="checkbox" value="yes" @if(isset($booking) && $booking->ext_booking) checked @endif>
+          <input class="form-check-input" name="ext_booking" type="checkbox" value="yes"
+          @if(old('ext_booking')) checked
+          @elseif(isset($booking) && $booking->ext_booking) checked @endif>
           Externe boeking? (booking.com,&hellip;)
         </label>
       </div>
@@ -106,7 +139,7 @@
     <div class="col-12">
       <div class="form-group">
         <label for="commentTextArea">Opmerkingen</label>
-        <textarea class="form-control" name="comments" id="commentTextArea" rows="5">@if(isset($booking)){{ $booking->comments }}@endif</textarea>
+        <textarea class="form-control" name="comments" id="commentTextArea" rows="5">@if(isset($booking)) {{ $booking->comments }}@else {{ old('comments') }}@endif</textarea>
       </div>
     </div>
   </div>

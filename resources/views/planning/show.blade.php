@@ -36,7 +36,12 @@
 
       <tr>
         <th>Kamer</th>
-        <td>{{ $booking->rooms[0]->name }}</td>
+        <td>
+          {{ $booking->rooms[0]->name }}
+          @if ($booking->rooms[0]->properties->options['part'] != -1)
+            &mdash; kamer {{ $booking->rooms[0]->properties->options['part']+1 }}
+          @endif
+        </td>
       </tr>
 
       <tr>
