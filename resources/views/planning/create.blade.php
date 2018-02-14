@@ -74,6 +74,15 @@
           @endfor
         </select>
       </div>
+      <div class="form-group">
+        <label class="form-check-label">
+          <input class="form-check-input" name="as_whole" type="checkbox" value="yes"
+            @if(old('as_whole')) checked
+            @elseif(isset($options) && $options['asWhole']) checked
+            @endif>
+          Kamer volledig boeken?
+        </label>
+      </div>
     </div>
     <div class="col-6">
       <div class="form-group">

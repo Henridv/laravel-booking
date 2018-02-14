@@ -52,7 +52,7 @@
         <td><i class="fas fa-bed" title="bed {{ $i+1 }}"></i>&nbsp;</td>
         @for($d=0; $d<7; $d++) {{-- loop through days for this bed --}}
           @php $date = $dates[$d]; @endphp
-          @if(isset($room->bookings) && ($booking = $room->hasBooking($date['date'], $i+1)))
+          @if($booking = $room->hasBooking($date['date'], $i+1))
             <td
               data-toggle="tooltip"
               data-placement="left"
@@ -64,6 +64,8 @@
                 {{ $booking->customer->name }}</a>
             </td>
             @php $d += ($booking->toShow($dates)-1) @endphp
+          @elseif ($room->isBookedAsWhole($date['date']))
+            <td class="non-bookable"></td>
           @else
             <td @php echo ($i == 0) ? 'class="striped"' : '' @endphp>
               <a href="{{ route('booking.create', ['date' => $date['date']->toDateString(), 'room' => $room->id]) }}" class="book__link">

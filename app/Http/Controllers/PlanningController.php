@@ -48,7 +48,7 @@ class PlanningController extends Controller
         $beds = $room->findFreeBeds($booking->arrival, $booking->departure, $part);
 
         $options['part'] = $part;
-        $options['asWhole'] = $part === -1 ? true : false;
+        $options['asWhole'] = $request->input('as_whole', 'no') === "yes" ? true : false;
 
         if (count($beds) >= $booking->guests) {
             $booking->save();

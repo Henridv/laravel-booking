@@ -43,6 +43,14 @@ class Room extends Model
 		return $this->bookings->where('arrival', 'after', Carbon::parse("now"));
 	}
 
+    /**
+     * Determines if there is a booking in this room for provided date and bed.
+     *
+     * @param Carbon $date
+     * @param string $bed
+     *
+     * @return array array of booking for this date
+     */
 	public function hasBooking(Carbon $date, $bed = "all")
 	{
 		$bookings = $this->bookings()
@@ -54,8 +62,31 @@ class Room extends Model
 		} else {
 			return $bookings->wherePivot('bed', $bed)->first();
 		}
-	}
+    }
 
+    public function isBookedAsWhole(Carbon $date)
+    {
+        $booking = $this->bookings()
+            ->where('arrival', '<=', $date)
+            ->where('departure', '>', $date)
+            ->first();
+
+        if ($booking) {
+            return $booking->properties->options['asWhole'];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Find free beds in specified period
+     *
+     * @param string $arrival Arrival date
+     * @param string $departure Departure date
+     * @param int $part Part of room to find beds
+     *
+     * @return array Returns an array of free beds in the room for specified dates
+     */
 	public function findFreeBeds($arrival, $departure, $part = -1) {
 
 		// find bookings in this room with overlapping dates
@@ -67,7 +98,10 @@ class Room extends Model
 		// which beds are taken
 		$beds_taken = [];
 		foreach ($overlap as $o) {
-			$beds_taken[] = $o->properties->bed;
+            if ($o->properties->options['asWhole'])
+                return [];
+            else
+			    $beds_taken[] = $o->properties->bed;
 		}
 
 		// get all beds in specific part

@@ -98,6 +98,10 @@ table.floatThead-table {
     text-align: center;
   }
 
+  td.non-bookable {
+    background-color: $gray-200;
+  }
+
   tr.layout-split {
     border-top: 2px solid $gray-500;
   }

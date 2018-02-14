@@ -43,8 +43,6 @@ Route::middleware(['auth'])->group(function() {
     Route::prefix('planning')->group(function() {
 
         Route::get('/', function(Request $request) {
-            $rooms = Room::orderBy('sorting')->get();
-
             // setlocale(LC_TIME, app()->getlocale());
             Carbon::setWeekStartsAt(Carbon::SATURDAY);
             $date = (new Carbon($request->query('date', "now")))->startOfWeek();
@@ -57,6 +55,15 @@ Route::middleware(['auth'])->group(function() {
                 ];
                 $date->modify('+1 day');
             }
+
+            // retrieve all rooms and eager load all bookings for visible week
+            $rooms = Room::orderBy('sorting')
+                ->with(['bookings' => function($query) use ($dates) {
+                    $query
+                    ->where('arrival', '<=', $dates[6]['date'])
+                    ->where('departure', '>=', $dates[0]['date']);
+                }])
+                ->get();
 
             return view('planning.index', ['rooms' => $rooms, 'dates' => $dates]);
         })->name('planning');
