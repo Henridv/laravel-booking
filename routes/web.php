@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(function() {
     Route::prefix('planning')->group(function() {
 
         Route::get('/', function(Request $request) {
-            // setlocale(LC_TIME, app()->getlocale());
+
             Carbon::setWeekStartsAt(Carbon::SATURDAY);
             $date = (new Carbon($request->query('date', "now")))->startOfWeek();
             $dates = [];

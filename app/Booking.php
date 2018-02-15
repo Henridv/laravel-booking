@@ -36,8 +36,12 @@ class Booking extends Model
 		return $this->arrival->diffInDays($this->departure);
 	}
 
-	/*
+	/**
 	 * number of days to show in current week
+     *
+     * @param array $dates Dates in visibile week
+     *
+     * @return int Number of visible days for this booking
 	 */
 	public function toShow($dates) {
 		$start = $week_start = $dates[0]['date']->copy();

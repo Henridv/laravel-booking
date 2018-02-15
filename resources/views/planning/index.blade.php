@@ -73,7 +73,7 @@
               </a>
             </td>
           @endif
-        @endfor
+        @endfor {{-- days of the week --}}
         </tr>
       @endfor {{-- beds --}}
     @endforeach
