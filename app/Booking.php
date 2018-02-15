@@ -50,6 +50,14 @@ class Booking extends Model
 
         return $tooltip;
     }
+
+    /**
+     * get remaining value to pay
+     */
+    public function getRemainingAttribute() {
+        return $this->basePrice*(100-$this->discount)/100.0 - $this->deposit;
+    }
+
 	/**
 	 * number of days to show in current week
      *

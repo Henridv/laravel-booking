@@ -7,29 +7,29 @@
 
 require('./bootstrap');
 require('select2');
-require('./bootstrap-datepicker')
-require('./bootstrap-datepicker.nl-BE.min')
-require('./jquery.floatThead')
+require('./bootstrap-datepicker');
+require('./bootstrap-datepicker.nl-BE.min');
+require('./jquery.floatThead');
 
 var moment = require('moment');
 
 $(function(){
     $('html').keydown(function(e){
-    	if ($('.btns__week').length > 0) {
-        	if (e.which == 37) {
-        		$("#btn__prev")[0].click();
-        	}
-        	if (e.which == 39) {
-        		$("#btn__next")[0].click();
-        	}
-    	}
+        if ($('.btns__week').length > 0) {
+            if (e.which == 37) {
+                $('#btn__prev')[0].click();
+            }
+            if (e.which == 39) {
+                $('#btn__next')[0].click();
+            }
+        }
     });
 });
 
 $("#planning__data").floatThead({
-	responsiveContainer: function($table){
-    	return $table.closest(".table-responsive");
-	},
+    responsiveContainer: function($table){
+        return $table.closest(".table-responsive");
+    },
 });
 
 $('.js-delete').click(function(e) {
@@ -48,31 +48,6 @@ $("#printBtn").click(function(e) {
 	var reinit = $("#planning__data").floatThead('destroy');
 	window.print();
 	reinit();
-});
-
-$("#arrivalInput").change(function() {
-	var arr_date = moment($(this).val(), "DD-MM-YYYY");
-	var dep_date = moment($("#departureInput").val(), "DD-MM-YYYY");
-
-	if (!dep_date.isValid() || arr_date.isAfter(dep_date)) {
-		$("#departureInput").val(arr_date.add(1,'d').format('DD-MM-YYYY'))
-		$("#departureInput").removeClass("heartbeat");
-
-		void $("#departureInput")[0].offsetWidth;
-		$("#departureInput").addClass("heartbeat");
-	}
-});
-$("#departureInput").change(function() {
-	var arr_date = moment($("#arrivalInput").val(), "DD-MM-YYYY");
-	var dep_date = moment($(this).val(), "DD-MM-YYYY");
-
-	if (!arr_date.isValid() ||arr_date.isAfter(dep_date)) {
-		$("#arrivalInput").val(dep_date.subtract(1,'d').format('DD-MM-YYYY'));
-		$("#arrivalInput").removeClass("heartbeat");
-
-		void $("#arrivalInput")[0].offsetWidth;
-		$("#arrivalInput").addClass("heartbeat");
-	}
 });
 
 $('#customerSelect').select2({
@@ -139,17 +114,52 @@ $("#saveGuest").click(function() {
 	});
 });
 
-$(".booked").tooltip();
+$('.booked').tooltip();
 
 var datepicker_options = {
-	format: "dd-mm-yyyy",
+    format: 'dd-mm-yyyy',
     weekStart: 6,
     maxViewMode: 2,
     keyboardNavigation: false,
     autoclose: true,
-    language: "nl-BE",
+    language: 'nl-BE',
+    zIndexOffset: 2000,
 };
-$('[type=date]').attr('type','text').datepicker(datepicker_options);
+
+// change input type first, then change date format and attach datepicker
+$('[type=date]').each(function() {
+    let date = moment($(this).val(), 'YYYY-MM-DD');
+    $(this)
+        .attr('type', 'text')
+        .val(date.format('DD-MM-YYYY'));
+    $(this).datepicker(datepicker_options);
+});
 
 datepicker_options.inputs = $('.actual_range');
-$('.input-group.date').attr('type','text').datepicker(datepicker_options);
+$('.input-group.date').datepicker(datepicker_options);
+
+$('#arrivalInput').datepicker().on('hide', function() {
+    var arr_date = moment($(this).val(), 'DD-MM-YYYY');
+    var dep_date = moment($('#departureInput').val(), 'DD-MM-YYYY');
+
+    if (!dep_date.isValid() || arr_date.isSameOrAfter(dep_date)) {
+        $('#departureInput').datepicker('update', arr_date.add(1,'d').format('DD-MM-YYYY'));
+        $('#departureInput').removeClass('heartbeat');
+
+        void $('#departureInput')[0].offsetWidth;
+        $('#departureInput').addClass('heartbeat');
+    }
+});
+
+$('#departureInput').datepicker().on('hide', function() {
+    var arr_date = moment($('#arrivalInput').val(), 'DD-MM-YYYY');
+    var dep_date = moment($(this).val(), 'DD-MM-YYYY');
+
+    if (!arr_date.isValid() ||arr_date.isSameOrAfter(dep_date)) {
+        $('#arrivalInput').datepicker('update', dep_date.subtract(1,'d').format('DD-MM-YYYY'));
+        $('#arrivalInput').removeClass('heartbeat');
+
+        void $('#arrivalInput')[0].offsetWidth;
+        $('#arrivalInput').addClass('heartbeat');
+    }
+});

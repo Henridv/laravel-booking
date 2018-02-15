@@ -17,7 +17,7 @@
       {{ csrf_field() }}
       <input class="form-control mr-2" name="goto_date"
         autocomplete="off" type="date" required
-        value="{{ $dates[0]['date']->format('d-m-Y') }}">
+        value="{{ $dates[0]['date']->format('Y-m-d') }}">
       <button class="btn btn-success my-2 my-sm-0" type="submit">Ga</button>
     </form>
 

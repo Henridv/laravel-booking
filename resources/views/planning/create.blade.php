@@ -34,14 +34,21 @@
         <div class="input-group date">
           <input type="date" class="form-control actual_range" name="arrival" id="arrivalInput" autocomplete="off" required
             @if(old('arrival')) value="{{ old('arrival') }}"
-            @elseif(isset($booking)) value="{{ $booking->arrival->format('d-m-Y') }}"
-            @elseif(isset($date)) value="{{ $date->format('d-m-Y') }}"
+            @elseif(isset($booking)) value="{{ $booking->arrival->format('Y-m-d') }}"
+            @elseif(isset($date)) value="{{ $date->format('Y-m-d') }}"
             @endif>
-          <input type="text" class="form-control" name="arrivalTime" id="arrivalTime" autocomplete="off" required
-            @if(old('arrivalTime')) value="{{ old('arrivalTime') }}"
-            @elseif(isset($booking)) value="{{ $booking->arrival->format('H:i') }}"
-            @else value="12:00"
-            @endif>
+          <select class="custom-select" name="arrivalTime" id="arrivalTime">
+            @for($h=0; $h<24; $h++)
+              @for($m=0; $m<60; $m += 30)
+                @php $time = str_pad($h, 2, '0', STR_PAD_LEFT).':'.str_pad($m, 2, '0', STR_PAD_LEFT) @endphp
+                <option
+                  @if(old('arrivalTime') === $time) selected
+                  @elseif(isset($booking) && $booking->arrival->format('H:i') === $time) selected
+                  @endif
+                  value="{{ $time }}">{{ $time }}</option>
+              @endfor
+            @endfor
+          </select>
           <span class="input-group-addon"><i class="fas fa-calendar-alt"></i></span>
         </div>
       </div>
@@ -50,15 +57,15 @@
         <div class="input-group date">
           <input type="date" class="form-control actual_range" name="departure" id="departureInput" autocomplete="off" required
             @if(old('departure')) value="{{ old('departure') }}"
-            @elseif(isset($booking)) value="{{ $booking->departure->format('d-m-Y') }}"
-            @elseif(isset($date)) value="{{ $date->addWeek()->format('d-m-Y') }}"
+            @elseif(isset($booking)) value="{{ $booking->departure->format('Y-m-d') }}"
+            @elseif(isset($date)) value="{{ $date->addWeek()->format('Y-m-d') }}"
             @endif>
           <span class="input-group-addon"><i class="fas fa-calendar-alt"></i></span>
         </div>
       </div>
       <div class="form-group">
         <label for="customerSelect">Hoofdboeker</label>
-        <select class="form-control" name="customer" id="customerSelect" placeholder="Selecteer gast...">
+        <select class="form-control custom-select" name="customer" id="customerSelect" placeholder="Selecteer gast...">
           <option></option>
           <option value="new-guest">Nieuwe gast...</option>
           @foreach($guests as $guest)
@@ -70,7 +77,7 @@
       </div>
       <div class="form-group">
         <label for="guestsSelect"># gasten</label>
-        <select class="form-control" name="guests" id="guestsSelect">
+        <select class="form-control custom-select" name="guests" id="guestsSelect">
           @for($i=0; $i<$max_beds; $i++)
             <option
               @if(old('guests') == $i+1) selected
@@ -92,7 +99,7 @@
     <div class="col-6">
       <div class="form-group">
         <label for="roomSelect">Kamer</label>
-        <select class="form-control" name="room" id="roomSelect">
+        <select class="form-control custom-select" name="room" id="roomSelect">
           @foreach($rooms as $room) {{-- all rooms --}}
             <option {{-- room as whole --}}
             @if((int)old('room') === $room->id) selected

@@ -14,12 +14,9 @@
     <table class="table table-hover mt-2">
       <tr>
         <th>Aankomst</th>
-        <td>{{ $booking->arrival->formatLocalized('%a, %e %b %Y') }}</td>
+        <td>{{ $booking->arrival->formatLocalized('%a, %e %b %Y') }} &mdash; {{ $booking->arrival->formatLocalized('%H:%M') }}</td>
       </tr>
-      <tr>
-        <th>Uur</th>
-        <td>{{ $booking->arrival->formatLocalized('%H:%M') }}</td>
-      </tr>
+
       <tr>
         <th>Vertrek</th>
         <td>{{ $booking->departure->formatLocalized('%a, %e %b %Y') }}</td>
@@ -58,6 +55,11 @@
       <tr>
         <th>Voorschot</th>
         <td>&euro;&nbsp;{{ $booking->deposit }}</td>
+      </tr>
+
+      <tr>
+        <th>Te betalen</th>
+        <td>&euro;&nbsp;{{ $booking->remaining }}</td>
       </tr>
 
       <tr>
