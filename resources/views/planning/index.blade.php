@@ -56,7 +56,8 @@
             <td
               data-toggle="tooltip"
               data-placement="left"
-              title="{{ $booking->comments }}"
+              data-html="true"
+              title="{{ $booking->tooltip }}"
               colspan="{{ $booking->toShow($dates) }}"
               class="booked @if ($booking->color()['luma'] > 180.0) reversed @endif"
               style="background-color: {{ $booking->color()['color'] }}">

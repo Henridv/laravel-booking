@@ -37,6 +37,11 @@
             @elseif(isset($booking)) value="{{ $booking->arrival->format('d-m-Y') }}"
             @elseif(isset($date)) value="{{ $date->format('d-m-Y') }}"
             @endif>
+          <input type="text" class="form-control" name="arrivalTime" id="arrivalTime" autocomplete="off" required
+            @if(old('arrivalTime')) value="{{ old('arrivalTime') }}"
+            @elseif(isset($booking)) value="{{ $booking->arrival->format('H:i') }}"
+            @else value="12:00"
+            @endif>
           <span class="input-group-addon"><i class="fas fa-calendar-alt"></i></span>
         </div>
       </div>
@@ -147,8 +152,16 @@
   <div class="row justify-content-md-center">
     <div class="col-12">
       <div class="form-group">
-        <label for="commentTextArea">Opmerkingen</label>
-        <textarea class="form-control" name="comments" id="commentTextArea" rows="5">@if(isset($booking)) {{ $booking->comments }}@else {{ old('comments') }}@endif</textarea>
+        <label for="compositionTextArea">Samenstelling</label>
+        <textarea class="form-control" name="composition" id="compositionTextArea" rows="5">@if(old('composition')) {{ old('composition') }}@elseif(isset($booking) && $booking->composition) {{ $booking->composition }}@endif</textarea>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-md-center">
+    <div class="col-12">
+      <div class="form-group">
+        <label for="commentTextArea">Opmerkingen / Extra info</label>
+        <textarea class="form-control" name="comments" id="commentTextArea" rows="5">@if(old('comments')) {{ old('comments') }}@elseif(isset($booking) && $booking->comments) {{ $booking->comments }}@endif</textarea>
       </div>
     </div>
   </div>

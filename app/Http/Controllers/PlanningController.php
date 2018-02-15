@@ -17,6 +17,7 @@ class PlanningController extends Controller
 
         $validatedData = $request->validate([
             'arrival' => 'required|date',
+            'arrivalTime' => 'required|date_format:"H:i"',
             'departure' => 'required|date|after:arrival',
             'customer' => 'required|exists:guests,id',
             'room' => 'required',
@@ -24,16 +25,18 @@ class PlanningController extends Controller
             'discount' => 'required|integer|min:0|max:100',
             'deposit' => 'required|integer|min:0',
             'guests' => 'required|integer|min:1',
+            'composition' => 'nullable|string',
             'comments' => 'nullable|string',
         ]);
 
-        $booking->arrival = Carbon::parse($request->input('arrival'));
+        $booking->arrival = Carbon::parse($request->input('arrival').' '.$request->input('arrivalTime'));
         $booking->departure = Carbon::parse($request->input('departure'));
         $booking->customer_id = $request->input('customer');
         $booking->guests = $request->input('guests');
         $booking->basePrice = $request->input('basePrice');
         $booking->discount = $request->input('discount');
         $booking->deposit = $request->input('deposit');
+        $booking->composition = $request->input('composition');
         $booking->comments = $request->input('comments');
 
         $booking->ext_booking = ("no" !== $request->input('ext_booking', 'no'));
@@ -69,6 +72,7 @@ class PlanningController extends Controller
 
         $validatedData = $request->validate([
             'arrival' => 'required|date',
+            'arrivalTime' => 'required|date_format:"H:i"',
             'departure' => 'required|date|after:arrival',
             'customer' => 'required|exists:guests,id',
             'room' => 'required',
@@ -76,18 +80,20 @@ class PlanningController extends Controller
             'discount' => 'required|integer|min:0|max:100',
             'deposit' => 'required|integer|min:0',
             'guests' => 'required|integer|min:1',
+            'composition' => 'nullable|string',
             'comments' => 'nullable|string',
         ]);
 
         $booking = new Booking;
 
-        $booking->arrival = Carbon::parse($request->input('arrival'));
+        $booking->arrival = Carbon::parse($request->input('arrival').' '.$request->input('arrivalTime'));
         $booking->departure = Carbon::parse($request->input('departure'));
         $booking->customer_id = $request->input('customer');
         $booking->guests = $request->input('guests');
         $booking->basePrice = $request->input('basePrice');
         $booking->discount = $request->input('discount');
         $booking->deposit = $request->input('deposit');
+        $booking->composition = $request->input('composition');
         $booking->comments = $request->input('comments');
 
         $booking->ext_booking = ("no" !== $request->input('ext_booking', 'no'));

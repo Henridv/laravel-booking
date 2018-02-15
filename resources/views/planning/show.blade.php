@@ -17,6 +17,10 @@
         <td>{{ $booking->arrival->formatLocalized('%a, %e %b %Y') }}</td>
       </tr>
       <tr>
+        <th>Uur</th>
+        <td>{{ $booking->arrival->formatLocalized('%H:%M') }}</td>
+      </tr>
+      <tr>
         <th>Vertrek</th>
         <td>{{ $booking->departure->formatLocalized('%a, %e %b %Y') }}</td>
       </tr>
@@ -24,6 +28,11 @@
       <tr>
         <th># gasten</th>
         <td>{{ $booking->guests }}</td>
+      </tr>
+
+      <tr>
+        <th>Samenstelling</th>
+        <td>{{ $booking->composition }}</td>
       </tr>
 
       <tr>

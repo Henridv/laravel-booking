@@ -51,23 +51,23 @@ class Room extends Model
      *
      * @return array array of booking for this date
      */
-	public function hasBooking(Carbon $date, $bed = "all")
-	{
-		$bookings = $this->bookings()
-			->where('arrival', '<=', $date)
-			->where('departure', '>', $date);
+    public function hasBooking(Carbon $date, $bed = "all")
+    {
+        $bookings = $this->bookings()
+            ->where('arrival', '<=', $date->endOfDay())
+            ->where('departure', '>', $date);
 
-		if ($bed === "all") {
-			return $bookings->get()->groupBy('id');
-		} else {
-			return $bookings->wherePivot('bed', $bed)->first();
-		}
+        if ($bed === "all") {
+            return $bookings->get()->groupBy('id');
+        } else {
+            return $bookings->wherePivot('bed', $bed)->first();
+        }
     }
 
     public function isBookedAsWhole(Carbon $date)
     {
         $booking = $this->bookings()
-            ->where('arrival', '<=', $date)
+            ->where('arrival', '<=', $date->endOfDay())
             ->where('departure', '>', $date)
             ->first();
 

@@ -15,14 +15,14 @@ class Booking extends Model
         'departure'
     ];
 
-    /*
+    /**
      * get main customer of booking
      */
 	public function customer() {
 		return $this->belongsTo('App\Guest');
 	}
 
-    /*
+    /**
      * get booked room(s)
      */
     public function rooms() {
@@ -32,10 +32,24 @@ class Booking extends Model
             ->using('App\BookingProperties');
     }
 
+    /**
+     * duration of booking in days
+     */
 	public function days() {
 		return $this->arrival->diffInDays($this->departure);
 	}
 
+    /**
+     * get tooltip
+     */
+    public function getTooltipAttribute() {
+        $tooltip = $this->arrival->format('H:i');
+
+        $tooltip .= ($this->composition) ? '<br />'.$this->composition : '';
+        $tooltip .= ($this->comments) ? '<br />'.$this->comments : '';
+
+        return $tooltip;
+    }
 	/**
 	 * number of days to show in current week
      *
@@ -55,7 +69,8 @@ class Booking extends Model
 		if ($this->departure->lte($week_end)){
             $end = $this->departure;
         }
-		return $start->diffInDays($end);
+        return $start->startOfDay()
+                ->diffInDays($end->startOfDay());
 	}
 
 	public function color() {
