@@ -32,7 +32,6 @@ class PlanningController extends Controller
         $booking->arrival = Carbon::parse($request->input('arrival').' '.$request->input('arrivalTime'));
         $booking->departure = Carbon::parse($request->input('departure'));
         $booking->customer_id = $request->input('customer');
-        $booking->guests = $request->input('guests');
         $booking->basePrice = $request->input('basePrice');
         $booking->discount = $request->input('discount');
         $booking->deposit = $request->input('deposit');
@@ -41,30 +40,31 @@ class PlanningController extends Controller
 
         $booking->ext_booking = ("no" !== $request->input('ext_booking', 'no'));
 
-        $booking->rooms()->detach();
-
         $placement = explode(';', $request->input('room'));
         $room_id = (int)$placement[0];
         $part = count($placement) > 1 ? (int)$placement[1] : -1;
+        $guests = $request->input('guests');
 
-        $room = Room::find($room_id);
-        $beds = $room->findFreeBeds($booking->arrival, $booking->departure, $part);
+        if ($room_id !== $booking->rooms[0]->room_id || $guests !== $booking->guests)
+        {
+            $room = Room::find($room_id);
+            $beds = $room->findFreeBeds($booking, $part);
 
-        $options['part'] = $part;
-        $options['asWhole'] = $request->input('as_whole', 'no') === "yes" ? true : false;
+            $options['part'] = $part;
+            $options['asWhole'] = $request->input('as_whole', 'no') === "yes" ? true : false;
 
-        if (count($beds) >= $booking->guests) {
-            $booking->save();
-            for ($i=0; $i<count($beds) && $i<$booking->guests; $i++) {
-                $booking->rooms()->save($room, ['bed' => $beds[$i], 'options' => $options]);
+            if (count($beds) >= $guests) {
+                $booking->guests = $guests;
+                $options['beds'] = array_slice($beds, 0, $guests);
+                $booking->rooms()->sync([$room_id => ['bed' => 1, 'options' => $options]]);
+            } else {
+                return redirect()
+                        ->route('booking.edit', $booking)
+                        ->with('error', 'Geen voldoende bedden')
+                        ->withInput();
             }
-        } else {
-            return redirect()
-                    ->route('booking.edit', $booking)
-                    ->with('error', 'Geen voldoende bedden')
-                    ->withInput();
         }
-
+        $booking->save();
         return redirect()->route('booking.show', $booking);
     }
 
@@ -89,7 +89,6 @@ class PlanningController extends Controller
         $booking->arrival = Carbon::parse($request->input('arrival').' '.$request->input('arrivalTime'));
         $booking->departure = Carbon::parse($request->input('departure'));
         $booking->customer_id = $request->input('customer');
-        $booking->guests = $request->input('guests');
         $booking->basePrice = $request->input('basePrice');
         $booking->discount = $request->input('discount');
         $booking->deposit = $request->input('deposit');
@@ -101,18 +100,20 @@ class PlanningController extends Controller
         $placement = explode(';', $request->input('room'));
         $room_id = (int)$placement[0];
         $part = count($placement) > 1 ? (int)$placement[1] : -1;
+        $guests = $request->input('guests');
 
         $room = Room::find($room_id);
-        $beds = $room->findFreeBeds($booking->arrival, $booking->departure, $part);
+        $beds = $room->findFreeBeds($booking, $part);
 
         $options['part'] = $part;
-        $options['asWhole'] = $part === -1 ? true : false;
+        $options['asWhole'] = $request->input('as_whole', 'no') === "yes" ? true : false;
 
-        if (count($beds) >= $booking->guests) {
+        if (count($beds) >= $guests) {
+            $booking->guests = $guests;
             $booking->save();
-            for ($i=0; $i<count($beds) && $i<$booking->guests; $i++) {
-                $booking->rooms()->save($room, ['bed' => $beds[$i], 'options' => $options]);
-            }
+
+            $options['beds'] = array_slice($beds, 0, $guests);
+            $booking->rooms()->sync([$room_id => ['bed' => 1, 'options' => $options]]);
         } else {
             return redirect()
                     ->route('booking.create')

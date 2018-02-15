@@ -60,8 +60,14 @@ class Room extends Model
         if ($bed === "all") {
             return $bookings->get()->groupBy('id');
         } else {
-            return $bookings->wherePivot('bed', $bed)->first();
+            $bookings = $bookings->get();
+            foreach($bookings as $booking) {
+                if (in_array($bed, $booking->properties->options['beds'])) {
+                    return $booking;
+                }
+            }
         }
+        return null;
     }
 
     public function isBookedAsWhole(Carbon $date)
@@ -87,22 +93,24 @@ class Room extends Model
      *
      * @return array Returns an array of free beds in the room for specified dates
      */
-	public function findFreeBeds($arrival, $departure, $part = -1) {
+    public function findFreeBeds($booking, $part = -1) {
 
-		// find bookings in this room with overlapping dates
-		$overlap = $this->bookings()
-			->where('arrival', '<', $departure)
-			->where('departure', '>', $arrival)
-			->get();
+        // find bookings in this room with overlapping dates
+        $overlap = $this->bookings()
+            ->where('arrival', '<', $booking->departure->startOfDay())
+            ->where('departure', '>', $booking->arrival->startOfDay())
+            ->where('booking_id', '!=', $booking->id)
+            ->get();
 
-		// which beds are taken
-		$beds_taken = [];
-		foreach ($overlap as $o) {
+        // which beds are taken
+        $beds_taken = [];
+        foreach ($overlap as $o) {
             if ($o->properties->options['asWhole'])
                 return [];
             else
-			    $beds_taken[] = $o->properties->bed;
-		}
+                $beds_taken = array_merge($beds_taken, $o->properties->options['beds']);
+        }
+        $beds_taken = array_unique($beds_taken);
 
 		// get all beds in specific part
 		$all_beds = range(1,$this->beds);

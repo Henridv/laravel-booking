@@ -26,6 +26,7 @@ class ChangeArrivalToDatetime extends Migration
         foreach($bookings as $booking) {
             $booking->timestamps = false;
             $booking->arrival_new = $booking->arrival;
+            $booking->arrival_new->hour = 12;
             $booking->save();
         }
 

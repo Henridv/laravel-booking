@@ -33,7 +33,7 @@
         <label for="arrivalInput">Aankomst</label>
         <div class="input-group date">
           <input type="date" class="form-control actual_range" name="arrival" id="arrivalInput" autocomplete="off" required
-            @if(old('arrival')) value="{{ old('arrival') }}"
+            @if(old('arrival')) value="{{ Carbon\Carbon::parse(old('arrival'))->format('Y-m-d') }}"
             @elseif(isset($booking)) value="{{ $booking->arrival->format('Y-m-d') }}"
             @elseif(isset($date)) value="{{ $date->format('Y-m-d') }}"
             @endif>
@@ -44,6 +44,7 @@
                 <option
                   @if(old('arrivalTime') === $time) selected
                   @elseif(isset($booking) && $booking->arrival->format('H:i') === $time) selected
+                  @elseif($time === '12:00') selected
                   @endif
                   value="{{ $time }}">{{ $time }}</option>
               @endfor
@@ -56,7 +57,7 @@
         <label for="departureInput">Vertrek</label>
         <div class="input-group date">
           <input type="date" class="form-control actual_range" name="departure" id="departureInput" autocomplete="off" required
-            @if(old('departure')) value="{{ old('departure') }}"
+            @if(old('departure')) value="{{ Carbon\Carbon::parse(old('departure'))->format('Y-m-d') }}"
             @elseif(isset($booking)) value="{{ $booking->departure->format('Y-m-d') }}"
             @elseif(isset($date)) value="{{ $date->addWeek()->format('Y-m-d') }}"
             @endif>
