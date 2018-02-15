@@ -61,7 +61,7 @@
               class="booked @if ($booking->color()['luma'] > 180.0) reversed @endif"
               style="background-color: {{ $booking->color()['color'] }}">
               <a href="{{ route('booking.show', $booking->id) }}">
-                {{ $booking->customer->name }}</a>
+                {{ $booking->customer->name }} &mdash; &euro;&nbsp;{{ $booking->deposit }}</a>
             </td>
             @php $d += ($booking->toShow($dates)-1) @endphp
           @elseif ($room->isBookedAsWhole($date['date']))

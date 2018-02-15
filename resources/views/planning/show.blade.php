@@ -1,24 +1,16 @@
 @extends('layout.base')
 
 @section('content')
-{{--<div class="row">
-  <div class="col-sm">
-    <h1>{{ $booking->customer->name }}</h1>
-  </div>
-</div>
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link active" data-toggle="tab" href="#boeking-info">Boeking</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#customer">Gast</a>
-  </li>
-</ul>
-<div id="myTabContent" class="tab-content">
-  <div class="tab-pane active show" id="boeking-info"> --}}
+
+<a class="btn btn-primary mt-2 mb-4" href="{{ route('planning', ['date' => $booking->arrival->toDateString() ]) }}">
+  Terug naar weekoverzicht</a>
+
 <div class="row mt-2">
   <div class="col-sm">
-    <h3>Boeking info</h3>
+    <h3>Boeking info
+      <a href="{{ route('booking.delete', $booking) }}" class="btn btn-danger float-right js-delete"><i class="far fa-trash-alt"> </i></a>
+      <a href="{{ route('booking.edit', $booking) }}" class="btn btn-primary float-right">Wijzig boeking</a>
+    </h3>
     <table class="table table-hover mt-2">
       <tr>
         <th>Aankomst</th>
@@ -75,11 +67,13 @@
         <td>{!! nl2br($booking->comments) !!}</td>
       </tr>
     </table>
-    <a href="{{ route('booking.delete', $booking) }}" class="btn btn-danger">Verwijder boeking</a>
-    <a href="{{ route('booking.edit', $booking) }}" class="btn btn-primary float-right">Aanpassen</a>
+    {{-- <a href="{{ route('booking.delete', $booking) }}" class="btn btn-danger">Verwijder boeking</a>
+    <a href="{{ route('booking.edit', $booking) }}" class="btn btn-primary float-right">Wijzig boeking</a> --}}
   </div>
   <div class="col-sm">
-    <h3>Boeker</h3>
+    <h3>Boeker
+      <a href="{{ route('guest.edit', [$booking, $booking->customer]) }}" class="btn btn-primary float-right">Wijzig boeker</a>
+    </h3>
     <table class="table table-hover mt-2">
       <tr>
         <th>Naam</th>
@@ -103,7 +97,28 @@
       </tr>
     </table>
     {{-- <a href="{{ route('booking.delete', $booking) }}" type="submit" class="btn btn-danger">Verwijder boeking</a> --}}
-    <a href="{{ route('guest.edit', [$booking, $booking->customer]) }}" class="btn btn-primary float-right">Aanpassen</a>
+    {{-- <a href="{{ route('guest.edit', [$booking, $booking->customer]) }}" class="btn btn-primary float-right">Wijzig boeker</a> --}}
+  </div>
+</div>
+
+
+<div class="modal" id="deleteBookingModal" tabindex="-1" role="dialog" aria-labelledby="deleteBookingLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Boeking verwijderen</h5>
+        <button class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h4>Zeker dat je deze boeking wil verwijderen?</h4>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-dismiss="modal">Nee</button>
+        <button class="btn btn-primary" id="deleteBooking" data-id="{{ $booking->id }}">Ja</button>
+      </div>
+    </div>
   </div>
 </div>
 @endsection

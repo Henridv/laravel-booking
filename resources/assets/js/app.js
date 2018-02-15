@@ -32,6 +32,18 @@ $("#planning__data").floatThead({
 	},
 });
 
+$('.js-delete').click(function(e) {
+    e.preventDefault();
+    $('#deleteBookingModal').modal();
+    $('#deleteBooking').data('href', $(this).attr('href'));
+});
+
+$('#deleteBooking').click(() => {
+    $('#deleteBookingModal').modal('hide');
+    let delLocaction = $('#deleteBooking').data('href');
+    window.location.href = delLocaction;
+});
+
 $("#printBtn").click(function(e) {
 	var reinit = $("#planning__data").floatThead('destroy');
 	window.print();
@@ -92,7 +104,7 @@ $("#saveGuest").click(function() {
 		'phone': phone,
 		'country': country,
 	};
-	
+
 	$.ajaxSetup({
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
