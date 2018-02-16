@@ -28,7 +28,12 @@
       </td>
       <td>{{ $booking->customer->country_str }}</td>
       <td>{{ $booking->guests }}</td>
-      <td>{{ $booking->rooms[0]->name }}</td>
+      <td>
+        {{ $booking->rooms[0]->name }}
+        @if ($booking->rooms[0]->properties->options['part'] != -1)
+          &mdash; kamer {{ $booking->rooms[0]->properties->options['part']+1 }}
+        @endif
+      </td>
     </tr>
     @endforeach
   </tbody>
