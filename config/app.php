@@ -181,6 +181,7 @@ return [
          * Extra's
          */
         CountryList\CountryListServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
     ],
 

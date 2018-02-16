@@ -146,11 +146,19 @@ class PlanningController extends Controller
         return redirect()->route('booking.show', $booking->id);
     }
 
+    /**
+     * Get bookings in the following period
+     *
+     * @param int $periodInWeeks Period in number of weeks
+     *
+     * @return Booking[] Array of bookings in period
+     */
     public static function getBookings($periodInWeeks) {
         $start = new Carbon('now');
         $end   = $start->copy()->addWeeks($periodInWeeks);
 
-        $bookings = Booking::where('arrival', '<=', $end)
+        $bookings = Booking::with(['customer', 'rooms'])
+                        ->where('arrival', '<=', $end)
                         ->where('departure', '>=', $start)
                         ->orderBy('arrival')
                         ->get();

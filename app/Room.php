@@ -53,14 +53,13 @@ class Room extends Model
      */
     public function hasBooking(Carbon $date, $bed = "all")
     {
-        $bookings = $this->bookings()
+        $bookings = $this->bookings
             ->where('arrival', '<=', $date->endOfDay())
             ->where('departure', '>', $date);
 
         if ($bed === "all") {
-            return $bookings->get()->groupBy('id');
+            return $bookings->groupBy('id');
         } else {
-            $bookings = $bookings->get();
             foreach($bookings as $booking) {
                 if (in_array($bed, $booking->properties->options['beds'])) {
                     return $booking;
@@ -72,7 +71,7 @@ class Room extends Model
 
     public function isBookedAsWhole(Carbon $date)
     {
-        $booking = $this->bookings()
+        $booking = $this->bookings
             ->where('arrival', '<=', $date->endOfDay())
             ->where('departure', '>', $date)
             ->first();

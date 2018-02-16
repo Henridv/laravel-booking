@@ -60,6 +60,7 @@ Route::middleware(['auth'])->group(function() {
             $rooms = Room::orderBy('sorting')
                 ->with(['bookings' => function($query) use ($dates) {
                     $query
+                    ->with('customer')
                     ->where('arrival', '<=', $dates[6]['date'])
                     ->where('departure', '>=', $dates[0]['date']);
                 }])
@@ -143,7 +144,7 @@ Route::middleware(['auth'])->group(function() {
         Route::post('edit/{booking}', 'PlanningController@editBooking');
 
         Route::get('{booking}', function(App\Booking $booking) {
-
+            $booking->load(['rooms', 'customer']);
             return view('planning.show', ["booking" => $booking]);
         })->name('booking.show')->where('booking', '[0-9]+');;
 
