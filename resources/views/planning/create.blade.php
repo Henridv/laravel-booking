@@ -50,7 +50,9 @@
               @endfor
             @endfor
           </select>
-          <span class="input-group-addon"><i class="fas fa-calendar-alt"></i></span>
+          <div class="input-group-append">
+            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -61,7 +63,9 @@
             @elseif(isset($booking)) value="{{ $booking->departure->format('Y-m-d') }}"
             @elseif(isset($date)) value="{{ $date->addWeek()->format('Y-m-d') }}"
             @endif>
-          <span class="input-group-addon"><i class="fas fa-calendar-alt"></i></span>
+          <div class="input-group-append">
+            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -87,12 +91,12 @@
           @endfor
         </select>
       </div>
-      <div class="form-group">
-        <label class="form-check-label">
-          <input class="form-check-input" name="as_whole" type="checkbox" value="yes"
-            @if(old('as_whole')) checked
-            @elseif(isset($options) && $options['asWhole']) checked
-            @endif>
+      <div class="form-check">
+        <input class="form-check-input" id="asWholeCheck" name="as_whole" type="checkbox" value="yes"
+          @if(old('as_whole')) checked
+          @elseif(isset($options) && $options['asWhole']) checked
+          @endif>
+        <label class="form-check-label" for="asWholeCheck">
           Kamer volledig boeken?
         </label>
       </div>
@@ -120,7 +124,9 @@
       <div class="form-group">
         <label for="basePriceInput">Basis prijs</label>
         <div class="input-group">
-          <span class="input-group-addon">€</span>
+          <div class="input-group-prepend">
+            <span class="input-group-text">€</span>
+          </div>
           <input class="form-control" name="basePrice" id="basePriceInput" autocomplete="off" type="number" required min="0"
           @if(isset($booking)) value="{{ $booking->basePrice }}"
           @else value="{{ old('basePrice', 0) }}"
@@ -130,7 +136,9 @@
       <div class="form-group">
         <label for="discountInput">Korting</label>
         <div class="input-group">
-          <span class="input-group-addon">%</span>
+          <div class="input-group-prepend">
+            <span class="input-group-text">%</span>
+          </div>
           <input class="form-control" name="discount" id="discountInput" autocomplete="off" type="number" required min="0" max="100"
             @if(isset($booking)) value="{{ $booking->discount }}"
             @else value="{{ old('discount', 0) }}"
@@ -140,24 +148,26 @@
       <div class="form-group">
         <label for="depositInput">Voorschot</label>
         <div class="input-group">
-          <span class="input-group-addon">€</span>
+          <div class="input-group-prepend">
+            <span class="input-group-text">€</span>
+          </div>
           <input class="form-control" name="deposit" id="depositInput" autocomplete="off" type="number" required min="0"
             @if(isset($booking)) value="{{ $booking->deposit }}"
             @else value="{{ old('deposit', 0) }}"
             @endif>
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-check-label">
-          <input class="form-check-input" name="ext_booking" type="checkbox" value="yes"
+      <div class="form-check">
+        <input class="form-check-input" id="extBookingCheck" name="ext_booking" type="checkbox" value="yes"
           @if(old('ext_booking')) checked
           @elseif(isset($booking) && $booking->ext_booking) checked @endif>
+        <label class="form-check-label" for="extBookingCheck">
           Externe boeking? (booking.com,&hellip;)
         </label>
       </div>
     </div>
   </div>
-  <div class="row justify-content-md-center">
+  <div class="row justify-content-md-center mt-4">
     <div class="col-12">
       <div class="form-group">
         <label for="compositionTextArea">Samenstelling</label>
