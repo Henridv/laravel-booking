@@ -8,8 +8,10 @@
 <div class="row mt-2">
   <div class="col-sm">
     <h3>Boeking info
+      @can('edit.booking')
       <a href="{{ route('booking.delete', $booking) }}" class="btn btn-danger float-right js-delete"><i class="far fa-trash-alt"> </i></a>
       <a href="{{ route('booking.edit', $booking) }}" class="btn btn-primary float-right">Wijzig boeking</a>
+      @endcan
     </h3>
     <table class="table table-hover mt-2">
       <tr>
@@ -78,12 +80,12 @@
         <td>{!! nl2br($booking->comments) !!}</td>
       </tr>
     </table>
-    {{-- <a href="{{ route('booking.delete', $booking) }}" class="btn btn-danger">Verwijder boeking</a>
-    <a href="{{ route('booking.edit', $booking) }}" class="btn btn-primary float-right">Wijzig boeking</a> --}}
   </div>
   <div class="col-sm">
     <h3>Boeker
+      @can('edit.booking')
       <a href="{{ route('guest.edit', [$booking, $booking->customer]) }}" class="btn btn-primary float-right">Wijzig boeker</a>
+      @endcan
     </h3>
     <table class="table table-hover mt-2">
       <tr>
@@ -107,8 +109,6 @@
         <td>{{ $booking->customer->country_str }}</td>
       </tr>
     </table>
-    {{-- <a href="{{ route('booking.delete', $booking) }}" type="submit" class="btn btn-danger">Verwijder boeking</a> --}}
-    {{-- <a href="{{ route('guest.edit', [$booking, $booking->customer]) }}" class="btn btn-primary float-right">Wijzig boeker</a> --}}
   </div>
 </div>
 

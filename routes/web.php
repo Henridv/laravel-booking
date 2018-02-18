@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Room;
 use App\Booking;
 use App\Guest;
+use App\User;
 
 use App\Http\Controllers\PlanningController;
 
@@ -107,9 +108,10 @@ Route::middleware(['auth'])->group(function() {
                 'part' => $part,
                 'max_beds' => Room::getMaxBeds(),
             ]);
-        })->name('booking.create');
+        })->name('booking.create')->middleware('can:add.booking');
 
-        Route::post('nieuw', 'PlanningController@createBooking');
+        Route::post('nieuw', 'PlanningController@createBooking')
+            ->middleware('can:add.booking');
 
         Route::get('edit/{booking}', function(Booking $booking) {
             $countries = CountryList::all(app()->getLocale());
@@ -139,9 +141,10 @@ Route::middleware(['auth'])->group(function() {
                 'options' => $booking->rooms[0]->properties->options,
                 'max_beds' => Room::getMaxBeds(),
             ]);
-        })->name('booking.edit');
+        })->name('booking.edit')->middleware('can:add.booking');
 
-        Route::post('edit/{booking}', 'PlanningController@editBooking');
+        Route::post('edit/{booking}', 'PlanningController@editBooking')
+            ->middleware('can:add.booking');
 
         Route::get('{booking}', function(App\Booking $booking) {
             $booking->load(['rooms', 'customer']);
@@ -164,7 +167,7 @@ Route::middleware(['auth'])->group(function() {
             ->name('booking.search');
     });
 
-    Route::prefix('gast')->group(function() {
+    Route::middleware(['can:edit.all'])->prefix('gast')->group(function() {
 
         Route::get('edit/{booking}/{guest}', function(App\Booking $booking, App\Guest $guest) {
             $countries = CountryList::all(app()->getLocale());
@@ -200,7 +203,7 @@ Route::middleware(['auth'])->group(function() {
         })->name('guest.delete');
     });
 
-    Route::prefix('kamers')->group(function() {
+    Route::middleware('can:edit.all')->prefix('kamers')->group(function() {
         Route::get('/', function() {
             $rooms = Room::orderBy('sorting')->get();
             return view('rooms.index', ['rooms' => $rooms]);
@@ -259,5 +262,17 @@ Route::middleware(['auth'])->group(function() {
 
     Route::get('extras', function() {
         return view('welcome');
-    })->name('extra');
+    })->name('extra')->middleware('can:edit.all');
+
+    Route::middleware('can:access.admin')->prefix('admin')->group(function() {
+        Route::get('/', function() {
+            $rooms = Room::orderBy('sorting')->get();
+
+            $users = User::all();
+
+            return view('auth.index', ['user' => Auth::user(), 'users' => $users]);
+        })->name('admin')->middleware('can:access.admin');
+
+        Route::post('passwd', 'Auth\ChangePasswordController@ChangePassword')->name('passwd');
+    });
 });
