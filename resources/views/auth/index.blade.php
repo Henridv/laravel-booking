@@ -69,7 +69,7 @@
         </div>
         @can('edit.users')
         <div class="tab-pane fade" id="users">
-            <a href="" class="btn btn-success">Gebruiker toevoegen</a>
+            <a href="{{ route('user.add') }}" class="btn btn-success">Gebruiker toevoegen</a>
             <table class="table table-hover mt-4">
                 <thead>
                 <tr>
@@ -88,12 +88,14 @@
                     <td>{{ $u->email }}</td>
                     <td>{{ $u->role->name }}</td>
                     <td>
+                        @if(Auth::user()->id !== $u->id)
                         <div class="btn-group" role="group">
                             <a href=""
                                 class="btn btn-success btn-sm">edit</a>
                             <a href=""
                                 class="btn btn-success btn-sm btn-danger"><i class="fa fa-times"></i></a>
                         </div>
+                        @endif
                     </td>
                 </tr>
                 </tbody>

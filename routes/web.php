@@ -274,5 +274,9 @@ Route::middleware(['auth'])->group(function() {
         })->name('admin')->middleware('can:access.admin');
 
         Route::post('passwd', 'Auth\ChangePasswordController@ChangePassword')->name('passwd');
+
+        Route::get('user/add', function() {
+
+        });
     });
 });
