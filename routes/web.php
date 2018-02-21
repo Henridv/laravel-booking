@@ -270,13 +270,22 @@ Route::middleware(['auth'])->group(function() {
 
             $users = User::all();
 
-            return view('auth.index', ['user' => Auth::user(), 'users' => $users]);
+            return view('admin.index', ['user' => Auth::user(), 'users' => $users]);
         })->name('admin')->middleware('can:access.admin');
 
         Route::post('passwd', 'Auth\ChangePasswordController@ChangePassword')->name('passwd');
 
-        Route::get('user/add', function() {
-
+        Route::prefix('user')->group(function() {
+            Route::get('add', function() {
+    
+            })->name('user.add')->middleware('can:edit.users');
+    
+            Route::get('del/{user}', function(User $user) {
+                $user->delete();
+                return redirect()
+                    ->route('admin', ['#users'])
+                    ->with('success', 'user deleted sucessfully');
+            })->name('user.del');
         });
     });
 });
