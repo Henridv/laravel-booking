@@ -19,6 +19,15 @@ class GuestsTableSeeder extends Seeder
             $guest->email = str_random(10)."@gmail.com";
             $guest->phone = str_random(10);
             $guest->country = "Belgium";
+
+			$hash = sha1($guest->name);
+
+			$r = substr($hash, 0,2);
+			$g = substr($hash, 2,2);
+			$b = substr($hash, 4,2);
+			
+            $guest->color = '#'.$r.$g.$b;
+
             $guest->save();
         }
     }
