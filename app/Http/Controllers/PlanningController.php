@@ -45,7 +45,7 @@ class PlanningController extends Controller
         $part = count($placement) > 1 ? (int)$placement[1] : -1;
         $guests = $request->input('guests');
 
-        if ($room_id !== $booking->rooms[0]->room_id || $guests !== $booking->guests)
+        if ($room_id !== $booking->rooms[0]->room_id || $guests !== $booking->guests) 
         {
             $room = Room::find($room_id);
             $beds = $room->findFreeBeds($booking, $part);

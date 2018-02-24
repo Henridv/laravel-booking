@@ -39,7 +39,7 @@
     <div class="col">
         <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade show active" id="profile">
-            <a href="" class="btn btn-success">Profiel aanpassen</a>
+            <a href="{{ route('profile.update') }}" class="btn btn-success">Profiel aanpassen</a>
             <table class="table table-hover mt-4">
                 <tr>
                     <th>Naam</th>
@@ -59,7 +59,7 @@
         </div>
         @can('edit.users')
         <div class="tab-pane fade" id="users">
-            <a href="{{ route('user.add') }}" class="btn btn-success">Gebruiker toevoegen</a>
+            <a href="{{ route('user.create') }}" class="btn btn-success">Gebruiker toevoegen</a>
             <table class="table table-hover mt-4">
                 <thead>
                 <tr>
@@ -80,7 +80,7 @@
                     <td>
                         @if(Auth::user()->id !== $u->id)
                         <div class="btn-group" role="group">
-                            <a href=""
+                            <a href="{{ route('user.update', $u->id) }}"
                                 class="btn btn-success btn-sm">edit</a>
                             <a href="{{ route('user.del', $u->id) }}"
                                 class="btn btn-success btn-sm btn-danger"><i class="fa fa-times"></i></a>

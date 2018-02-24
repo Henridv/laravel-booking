@@ -17,6 +17,7 @@ use App\Room;
 use App\Booking;
 use App\Guest;
 use App\User;
+use App\Role;
 
 use App\Http\Controllers\PlanningController;
 
@@ -264,8 +265,8 @@ Route::middleware(['auth'])->group(function() {
         return view('welcome');
     })->name('extra')->middleware('can:edit.all');
 
-    Route::middleware('can:access.admin')->prefix('admin')->group(function() {
-        Route::get('/', function() {
+    Route::middleware('can:access.admin')->prefix('admin')->group(function () {
+        Route::get('/', function () {
             $rooms = Room::orderBy('sorting')->get();
 
             $users = User::all();
@@ -275,16 +276,30 @@ Route::middleware(['auth'])->group(function() {
 
         Route::post('passwd', 'Auth\ChangePasswordController@ChangePassword')->name('passwd');
 
-        Route::prefix('user')->group(function() {
-            Route::get('add', function() {
-    
-            })->name('user.add')->middleware('can:edit.users');
-    
-            Route::get('del/{user}', function(User $user) {
+        Route::prefix('user')->group(function () {
+            Route::get('create', function () {
+                return view('admin.user_create', ['roles' => Role::all()]);
+            })->name('user.create')->middleware('can:edit.users');
+
+            Route::post('create', 'UserController@createUser')->middleware('can:edit.users');
+
+            Route::get('update/{user}', function (User $user) {
+                return view('admin.user_create', ['roles' => Role::all(), 'user' => $user, 'update_me' => false]);
+            })->name('user.update')->middleware('can:edit.users');
+
+            Route::post('update/{user}', 'UserController@updateUser')->middleware('can:edit.users');
+
+            Route::get('update-me', function () {
+                return view('admin.user_create', ['roles' => Role::all(), 'user' => Auth::user(), 'update_me' => true]);
+            })->name('profile.update');
+
+            Route::post('update-me', 'UserController@updateMe');
+
+            Route::get('del/{user}', function (User $user) {
                 $user->delete();
                 return redirect()
                     ->route('admin', ['#users'])
-                    ->with('success', 'user deleted sucessfully');
+                    ->with('success', 'User deleted sucessfully');
             })->name('user.del');
         });
     });
