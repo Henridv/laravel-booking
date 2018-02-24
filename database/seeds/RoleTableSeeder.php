@@ -13,17 +13,6 @@ class RoleTableSeeder extends Seeder
      */
     public function run()
     {
-
-        $role_superadmin = new Role();
-        $role_superadmin->name = 'superadmin';
-        $role_superadmin->description = 'Super Admin with all permissions';
-        $role_superadmin->save();
-
-        $role_admin = new Role();
-        $role_admin->name = 'admin';
-        $role_admin->description = 'An admin';
-        $role_admin->save();
-
         $role_viewer = new Role();
         $role_viewer->name = 'viewer';
         $role_viewer->description = 'Only viewing';
@@ -33,5 +22,15 @@ class RoleTableSeeder extends Seeder
         $role_int_viewer->name = 'viewer.internal';
         $role_int_viewer->description = 'Only view internal bookings';
         $role_int_viewer->save();
+
+        $role_admin = new Role();
+        $role_admin->name = 'admin';
+        $role_admin->description = 'An admin';
+        $role_admin->save();
+        
+        $role_superadmin = new Role();
+        $role_superadmin->name = 'superadmin';
+        $role_superadmin->description = 'Super Admin with all permissions';
+        $role_superadmin->save();
     }
 }
