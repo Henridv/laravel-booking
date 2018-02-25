@@ -13,8 +13,8 @@ use App\Guest;
 
 class PlanningController extends Controller
 {
-    public function editBooking(Request $request, Booking $booking) {
-
+    public function saveBooking(Request $request, Booking $booking)
+    {
         $validatedData = $request->validate([
             'arrival' => 'required|date',
             'arrivalTime' => 'required|date_format:"H:i"',
@@ -45,8 +45,10 @@ class PlanningController extends Controller
         $part = count($placement) > 1 ? (int)$placement[1] : -1;
         $guests = $request->input('guests');
 
-        if ($room_id !== $booking->rooms[0]->room_id || $guests !== $booking->guests)
-        {
+        // only look for free beds if:
+        // 1. new booking; or
+        // 2. existing booking and number of guests or room changes
+        if (!$booking->exists || ($guests !== $booking->guests || $room_id !== $booking->rooms[0]->room_id)) {
             $room = Room::find($room_id);
             $beds = $room->findFreeBeds($booking, $part);
 
@@ -55,77 +57,49 @@ class PlanningController extends Controller
 
             if (count($beds) >= $guests) {
                 $booking->guests = $guests;
+                $booking->save();
+
                 $options['beds'] = array_slice($beds, 0, $guests);
                 $booking->rooms()->sync([$room_id => ['bed' => 1, 'options' => $options]]);
             } else {
-                return redirect()
-                        ->route('booking.edit', $booking)
-                        ->with('error', 'Geen voldoende bedden')
-                        ->withInput();
+                return null;
             }
         }
-        $booking->save();
-        return redirect()->route('booking.show', $booking);
+        return true;
     }
 
-    public function createBooking(Request $request) {
+    public function editBooking(Request $request, Booking $booking)
+    {
+        $result = $this->saveBooking($request, $booking);
 
-        $validatedData = $request->validate([
-            'arrival' => 'required|date',
-            'arrivalTime' => 'required|date_format:"H:i"',
-            'departure' => 'required|date|after:arrival',
-            'customer' => 'required|exists:guests,id',
-            'room' => 'required',
-            'basePrice' => 'required|integer|min:0',
-            'discount' => 'required|integer|min:0|max:100',
-            'deposit' => 'required|integer|min:0',
-            'guests' => 'required|integer|min:1',
-            'composition' => 'nullable|string',
-            'comments' => 'nullable|string',
-        ]);
-
-        $booking = new Booking;
-
-        $booking->arrival = Carbon::parse($request->input('arrival').' '.$request->input('arrivalTime'));
-        $booking->departure = Carbon::parse($request->input('departure'));
-        $booking->customer_id = $request->input('customer');
-        $booking->basePrice = $request->input('basePrice');
-        $booking->discount = $request->input('discount');
-        $booking->deposit = $request->input('deposit');
-        $booking->composition = $request->input('composition');
-        $booking->comments = $request->input('comments');
-
-        $booking->ext_booking = ("no" !== $request->input('ext_booking', 'no'));
-
-        $placement = explode(';', $request->input('room'));
-        $room_id = (int)$placement[0];
-        $part = count($placement) > 1 ? (int)$placement[1] : -1;
-        $guests = $request->input('guests');
-
-        $room = Room::find($room_id);
-        $beds = $room->findFreeBeds($booking, $part);
-
-        $options['part'] = $part;
-        $options['asWhole'] = $request->input('as_whole', 'no') === "yes" ? true : false;
-
-        if (count($beds) >= $guests) {
-            $booking->guests = $guests;
-            $booking->save();
-
-            $options['beds'] = array_slice($beds, 0, $guests);
-            $booking->rooms()->sync([$room_id => ['bed' => 1, 'options' => $options]]);
+        if ($result) {
+            return redirect()->route('booking.show', $booking);
         } else {
             return redirect()
-                    ->route('booking.create')
-                    ->with('error', 'Geen voldoende bedden')
-                    ->withInput();
+                ->route('booking.edit', $booking)
+                ->with('error', 'Geen voldoende bedden')
+                ->withInput();
         }
-
-        return redirect()
-            ->route('planning',['date' => $booking->arrival->toDateString()]);
     }
 
-    public function editGuest(Request $request, Booking $booking, Guest $guest) {
+    public function createBooking(Request $request)
+    {
+        $booking = new Booking;
+        $result = $this->saveBooking($request, $booking);
+
+        if ($result) {
+            return redirect()
+                ->route('planning', ['date' => $booking->arrival->toDateString()]);
+        } else {
+            return redirect()
+                ->route('booking.create')
+                ->with('error', 'Geen voldoende bedden')
+                ->withInput();
+        }
+    }
+
+    public function editGuest(Request $request, Booking $booking, Guest $guest)
+    {
 
         $validatedData = $request->validate([
             'firstname' => 'required|string',
@@ -153,7 +127,8 @@ class PlanningController extends Controller
      *
      * @return Booking[] Array of bookings in period
      */
-    public static function getBookings($periodInWeeks) {
+    public static function getBookings($periodInWeeks)
+    {
         $start = new Carbon('now');
         $end   = $start->copy()->addWeeks($periodInWeeks);
 
@@ -170,7 +145,7 @@ class PlanningController extends Controller
     {
         $search = $request->query('search', '');
         $sql_search = '%'.$search.'%';
-        // DB::enableQueryLog();
+
         $bookings = Booking::join('guests', 'guests.id', '=', 'bookings.customer_id')
                     ->select('bookings.*', 'guests.firstname', 'guests.lastname')
                     ->where('firstname', 'LIKE', $sql_search)
@@ -178,7 +153,7 @@ class PlanningController extends Controller
                     ->orwhere(DB::raw('CONCAT(firstname, " ", lastname)'), 'LIKE', $sql_search)
                     ->orderBy('arrival')
                     ->get();
-        // dd(DB::getQueryLog());
+
         return view('planning.search', [
             'bookings' => $bookings
         ]);

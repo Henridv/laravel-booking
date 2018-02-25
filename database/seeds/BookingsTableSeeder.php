@@ -21,28 +21,35 @@ class BookingsTableSeeder extends Seeder
         for ($i=0; $i<5; $i++) {
             $booking = new Booking();
 
-            $booking->arrival = Carbon::parse('now')->startOfWeek()->addDays(rand(0,5));
+            $booking->arrival = Carbon::parse('now')->startOfWeek()->addDays(rand(0,5))->addHours(rand(0,23));
             $booking->departure = Carbon::parse($booking->arrival)->addDays(rand(1,10));
 
-            $r = Room::find(rand(1,Room::count()));
+            $room = Room::find(rand(1,Room::count()));
             
-            $booking->guests = rand(1,$r->beds);
+            $booking->guests = $guests = rand(1,$room->beds);
             $booking->basePrice = rand(5,10)*10;
             $booking->discount = rand(1,10)*10;
             $booking->deposit = (int)$booking->basePrice/(rand(1,2)*5);
-
-            $booking->customer_id = rand(1,Guest::count());
-            
+            $booking->ext_booking = rand(0,1);
             $booking->comments = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat, nunc ut lobortis dapibus, tortor sapien tristique leo, sed molestie.";
+            $booking->composition = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+            $booking->customer_id = rand(1,Guest::count());
 
-            $booking->save();
-            
-            // add room and assigned beds to booking
-            $beds = range(1,$r->beds);
-            shuffle($beds);
+            $room_id = $room->id;
+            $part = -1;
 
-            for ($b=0; $b<$booking->guests && $b<$r->beds; $b++)
-                $booking->rooms()->save($r, ['bed' => $beds[$b]]);
+            $beds = $room->findFreeBeds($booking, $part);
+
+            $options['part'] = $part;
+            $options['asWhole'] = rand(0,1) === 1 ? true : false;
+
+            if (count($beds) >= $guests) {
+                $booking->save();
+                
+                $options['beds'] = array_slice($beds, 0, $guests);
+                $booking->rooms()->sync([$room_id => ['bed' => 1, 'options' => $options]]);
+            }
+
         }
     }
 }

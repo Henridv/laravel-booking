@@ -29,12 +29,19 @@
                         <li class="nav-item @if (strstr('planning', Request::path())) active @endif">
                             <a class="nav-link" href="{{ route('planning') }}">Planning</a>
                         </li>
+                        @can('edit.all')
                         <li class="nav-item @if (strstr('kamers', Request::path())) active @endif">
                             <a class="nav-link" href="{{ route('rooms') }}">Kamers</a>
                         </li>
                         <li class="nav-item @if (strstr('extras', Request::path())) active @endif">
                             <a class="nav-link" href="{{ route('extra') }}">Extra's</a>
                         </li>
+                        @endcan
+                        @can('access.admin')
+                        <li class="nav-item @if (strstr('admin', Request::path())) active @endif">
+                            <a class="nav-link" href="{{ route('admin') }}">Admin</a>
+                        </li>
+                        @endcan
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url('/logout') }}"
                                 onclick="event.preventDefault();

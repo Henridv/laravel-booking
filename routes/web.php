@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 use App\Room;
 use App\Booking;
 use App\Guest;
+use App\User;
+use App\Role;
 
 use App\Http\Controllers\PlanningController;
 
@@ -23,7 +25,7 @@ use Carbon\Carbon;
 
 Auth::routes();
 
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
         $bookings = PlanningController::getBookings(2);
 
@@ -40,9 +42,9 @@ Route::middleware(['auth'])->group(function() {
         ]);
     })->name('welcome');
 
-    Route::prefix('planning')->group(function() {
+    Route::prefix('planning')->group(function () {
 
-        Route::get('/', function(Request $request) {
+        Route::get('/', function (Request $request) {
 
             Carbon::setWeekStartsAt(Carbon::SATURDAY);
             $date = (new Carbon($request->query('date', "now")))->startOfWeek();
@@ -58,7 +60,7 @@ Route::middleware(['auth'])->group(function() {
 
             // retrieve all rooms and eager load all bookings for visible week
             $rooms = Room::orderBy('sorting')
-                ->with(['bookings' => function($query) use ($dates) {
+                ->with(['bookings' => function ($query) use ($dates) {
                     $query
                     ->with('customer')
                     ->where('arrival', '<=', $dates[6]['date'])
@@ -107,9 +109,10 @@ Route::middleware(['auth'])->group(function() {
                 'part' => $part,
                 'max_beds' => Room::getMaxBeds(),
             ]);
-        })->name('booking.create');
+        })->name('booking.create')->middleware('can:add.booking');
 
-        Route::post('nieuw', 'PlanningController@createBooking');
+        Route::post('nieuw', 'PlanningController@createBooking')
+            ->middleware('can:add.booking');
 
         Route::get('edit/{booking}', function(Booking $booking) {
             $countries = CountryList::all(app()->getLocale());
@@ -139,9 +142,10 @@ Route::middleware(['auth'])->group(function() {
                 'options' => $booking->rooms[0]->properties->options,
                 'max_beds' => Room::getMaxBeds(),
             ]);
-        })->name('booking.edit');
+        })->name('booking.edit')->middleware('can:add.booking');
 
-        Route::post('edit/{booking}', 'PlanningController@editBooking');
+        Route::post('edit/{booking}', 'PlanningController@editBooking')
+            ->middleware('can:add.booking');
 
         Route::get('{booking}', function(App\Booking $booking) {
             $booking->load(['rooms', 'customer']);
@@ -164,7 +168,7 @@ Route::middleware(['auth'])->group(function() {
             ->name('booking.search');
     });
 
-    Route::prefix('gast')->group(function() {
+    Route::middleware(['can:edit.all'])->prefix('gast')->group(function() {
 
         Route::get('edit/{booking}/{guest}', function(App\Booking $booking, App\Guest $guest) {
             $countries = CountryList::all(app()->getLocale());
@@ -200,7 +204,7 @@ Route::middleware(['auth'])->group(function() {
         })->name('guest.delete');
     });
 
-    Route::prefix('kamers')->group(function() {
+    Route::middleware('can:edit.all')->prefix('kamers')->group(function() {
         Route::get('/', function() {
             $rooms = Room::orderBy('sorting')->get();
             return view('rooms.index', ['rooms' => $rooms]);
@@ -259,5 +263,44 @@ Route::middleware(['auth'])->group(function() {
 
     Route::get('extras', function() {
         return view('welcome');
-    })->name('extra');
+    })->name('extra')->middleware('can:edit.all');
+
+    Route::middleware('can:access.admin')->prefix('admin')->group(function () {
+        Route::get('/', function () {
+            $rooms = Room::orderBy('sorting')->get();
+
+            $users = User::all();
+
+            return view('admin.index', ['user' => Auth::user(), 'users' => $users]);
+        })->name('admin')->middleware('can:access.admin');
+
+        Route::post('passwd', 'Auth\ChangePasswordController@ChangePassword')->name('passwd');
+
+        Route::prefix('user')->group(function () {
+            Route::get('create', function () {
+                return view('admin.user_create', ['roles' => Role::all()]);
+            })->name('user.create')->middleware('can:edit.users');
+
+            Route::post('create', 'UserController@createUser')->middleware('can:edit.users');
+
+            Route::get('update/{user}', function (User $user) {
+                return view('admin.user_create', ['roles' => Role::all(), 'user' => $user, 'update_me' => false]);
+            })->name('user.update')->middleware('can:edit.users');
+
+            Route::post('update/{user}', 'UserController@updateUser')->middleware('can:edit.users');
+
+            Route::get('update-me', function () {
+                return view('admin.user_create', ['roles' => Role::all(), 'user' => Auth::user(), 'update_me' => true]);
+            })->name('profile.update');
+
+            Route::post('update-me', 'UserController@updateMe');
+
+            Route::get('del/{user}', function (User $user) {
+                $user->delete();
+                return redirect()
+                    ->route('admin', ['#users'])
+                    ->with('success', 'User deleted sucessfully');
+            })->name('user.del');
+        });
+    });
 });

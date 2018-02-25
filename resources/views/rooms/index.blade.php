@@ -20,13 +20,13 @@
                 <td>
                     <div class="btn-group" role="group">
                         <a href="{{ route('room.sort.up', $room->id) }}"
-                            class="btn btn-primary btn-sm" 
+                            class="btn btn-primary btn-sm"
                             data-id="{{ $room->id }}"
                             data-sort="{{ $room->sorting }}">
                                 <i class="fa fa-chevron-up"></i>
                         </a>
                         <a href="{{ route('room.sort.down', $room->id) }}"
-                            class="btn btn-primary btn-sm" 
+                            class="btn btn-primary btn-sm"
                             data-id="{{ $room->id }}"
                             data-sort="{{ $room->sorting }}">
                                 <i class="fa fa-chevron-down"></i>
@@ -46,5 +46,5 @@
             </tr>
         @endforeach
     </tbody>
-</table> 
+</table>
 @endsection

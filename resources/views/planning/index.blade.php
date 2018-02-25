@@ -22,7 +22,9 @@
     </form>
 
     <div>
+      @can('add.booking')
       <a href="{{ route('booking.create') }}?date={{ $dates[0]['date']->toDateString() }}" class="btn btn-success mb-2">Nieuwe boeking</a>
+      @endcan
       <a  href="#" id="printBtn" class="btn btn-secondary mb-2">Print <i class="fas fa-print fa-sm"></i></a>
     </div>
   </div>
@@ -68,11 +70,15 @@
           @elseif (!$room->bookings->isEmpty() && $room->isBookedAsWhole($date['date']))
             <td class="non-bookable"></td>
           @else
-            <td @php echo ($i == 0) ? 'class="striped"' : '' @endphp>
+            @can('add.booking')
+            <td>
               <a href="{{ route('booking.create', ['date' => $date['date']->toDateString(), 'room' => $room->id]) }}" class="book__link">
                 <i class="fas fa-plus"></i>
               </a>
             </td>
+            @else
+            <td></td>
+            @endcan
           @endif
         @endfor {{-- days of the week --}}
         </tr>
