@@ -25,7 +25,7 @@ use Carbon\Carbon;
 
 Auth::routes();
 
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
         $bookings = PlanningController::getBookings(2);
 
@@ -42,9 +42,9 @@ Route::middleware(['auth'])->group(function() {
         ]);
     })->name('welcome');
 
-    Route::prefix('planning')->group(function() {
+    Route::prefix('planning')->group(function () {
 
-        Route::get('/', function(Request $request) {
+        Route::get('/', function (Request $request) {
 
             Carbon::setWeekStartsAt(Carbon::SATURDAY);
             $date = (new Carbon($request->query('date', "now")))->startOfWeek();
@@ -60,7 +60,7 @@ Route::middleware(['auth'])->group(function() {
 
             // retrieve all rooms and eager load all bookings for visible week
             $rooms = Room::orderBy('sorting')
-                ->with(['bookings' => function($query) use ($dates) {
+                ->with(['bookings' => function ($query) use ($dates) {
                     $query
                     ->with('customer')
                     ->where('arrival', '<=', $dates[6]['date'])

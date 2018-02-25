@@ -14,14 +14,15 @@ class Room extends Model
      */
     protected $casts = [
         'layout' => 'array',
-	];
+    ];
 
-	public function bookings() {
+    public function bookings()
+    {
         return $this->belongsToMany('App\Booking')
             ->as('properties')
             ->withPivot(['bed', 'options'])
             ->using('App\BookingProperties');
-	}
+    }
 
 	// getter for layout
 	public function getLayoutStrAttribute() {
