@@ -64,6 +64,7 @@
         <td>&euro;&nbsp;{{ $booking->remaining }}</td>
       </tr>
 
+      @can('edit.all')
       <tr>
         <th>Externe booking (booking.com,...)</th>
         <td>
@@ -74,6 +75,7 @@
           @endif
         </td>
       </tr>
+      @endcan
 
       <tr>
         <th>Opmerkingen</th>

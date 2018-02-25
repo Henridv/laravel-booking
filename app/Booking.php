@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
+use App\Scopes\RoleScope;
+
 class Booking extends Model
 {
 
@@ -14,6 +16,18 @@ class Booking extends Model
         'arrival',
         'departure'
     ];
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new RoleScope);
+    }
 
     /**
      * get main customer of booking
