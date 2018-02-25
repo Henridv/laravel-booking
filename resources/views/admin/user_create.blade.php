@@ -71,7 +71,7 @@
                     @foreach($roles as $role)
                         <option value="{{ $role->id }}"
                         @if(old('role') && (int)old('role') === $role->id) selected
-                        @elseif(isset($user) && $user->role === $role) selected @endif>{{ $role->name }}</option>
+                        @elseif(isset($user) && $user->role->id === $role->id) selected @endif>{{ $role->name }}</option>
                     @endforeach
                     @endif
                 </select>
