@@ -11,6 +11,8 @@ use App\Booking;
 use App\Room;
 use App\Guest;
 
+use CountryList;
+
 class PlanningController extends Controller
 {
     public function saveBooking(Request $request, Booking $booking)
@@ -121,6 +123,14 @@ class PlanningController extends Controller
     }
 
     /**
+     * Delete extra guest
+     */
+    public function delExtraGuest(Request $request, Booking $booking, Guest $guest)
+    {
+        $booking->extraGuests()->detach($guest);
+        return redirect()->route('booking.show', $booking);
+    }
+    /**
      * Get bookings in the following period
      *
      * @param int $periodInWeeks Period in number of weeks
@@ -157,5 +167,27 @@ class PlanningController extends Controller
         return view('planning.search', [
             'bookings' => $bookings
         ]);
+    }
+
+    public static function getCountryList($locale = 'nl_BE')
+    {
+        $countries = CountryList::all($locale);
+
+        // move most common picks to front of array
+        $be = $countries['BE'];
+        $fr = $countries['FR'];
+        $nl = $countries['NL'];
+        $es = $countries['ES'];
+        $nope = "---------------";
+
+        $countries = [
+            'BE' => $be,
+            'FR' => $fr,
+            'NL' => $nl,
+            'ES' => $es,
+            $nope
+        ] + $countries;
+
+        return $countries;
     }
 }

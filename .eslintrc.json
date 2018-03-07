@@ -1,0 +1,25 @@
+{
+  "root": true,
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "script"
+  },
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "jquery": true
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "rules": {
+    "import/no-extraneous-dependencies": "off",
+    "no-underscore-dangle": ["error", { "allow": ["_id", "_super"] }],
+    "import/no-unresolved": "off",
+    "arrow-parens": 0,
+    "import/extensions": "off",
+    "curly": "error",
+    "no-console": "off"
+  }
+}
