@@ -116,17 +116,15 @@
 
 
     @unless($booking->guests === 1)
-    <h3>Extra gasten</h3>
+    <h3>Extra gasten
+      @if ($booking->extraGuests->count() < $booking->guests-1)
+        <a href="" class="btn btn-primary float-right js-add-extra-guest">Extra gast toevoegen</a>
+      @endif
+    </h3>
     @endunless
 
     @unless($booking->extraGuests->isEmpty())
     <table class="table table-hover mt-2" id="extraGuestTable">
-    <thead>
-      <tr>
-        <th>Naam</th>
-        <th></th>
-      </tr>
-    </thead>
     @foreach($booking->extraGuests as $guest)
       <tr>
         <td>{{ $guest->name }}</td>
@@ -138,9 +136,6 @@
     @endforeach
     </table>
     @endunless
-    @if ($booking->extraGuests->count() < $booking->guests-1)
-      <p><a href="" class="btn btn-primary js-add-extra-guest">Extra gast toevoegen</a></p>
-    @endif
   </div>
 </div>
 

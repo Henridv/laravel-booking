@@ -75,7 +75,8 @@ $('#customerSelect').on('select2:select', function (e) {
 
 $('.js-extra-guest-select').select2({
 	placeholder: 'Selecteer gast...',
-	theme: "bootstrap"
+	theme: "bootstrap",
+	dropdownParent: $('#extraGuestModal'),
 });
 
 $('.js-extra-guest-select').on('select2:select', function (e) {

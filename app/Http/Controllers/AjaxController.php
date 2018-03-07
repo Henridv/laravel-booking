@@ -67,11 +67,11 @@ class AjaxController extends Controller
     {
         if ($request->ajax()) {
             $booking_id = $request->input('booking');
-            $guest = $request->input('guest');
+            $data = $request->input('guest');
 
             $booking = Booking::find($booking_id);
-            if (isset($guest['id'])) {
-                $guest = Guest::find($guest['id']);
+            if (isset($data['id'])) {
+                $guest = Guest::find($data['id']);
             } else {
                 $guest = new Guest;
                 $guest->firstname = $data['firstname'];

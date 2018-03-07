@@ -77,26 +77,11 @@ Route::middleware(['auth'])->group(function () {
             return redirect()->route('planning', ['date' => $date]);
         })->name('planning.change_date');
 
-        Route::get('nieuw', function(Request $request) {
-            $countries = CountryList::all('nl_BE');
+        Route::get('nieuw', function (Request $request) {
+            $countries = PlanningController::getCountryList('nl_BE');
 
             Carbon::setWeekStartsAt(Carbon::SATURDAY);
             $date = (new Carbon($request->query('date', "now")));
-
-            // move most common picks to front of array
-            $be = $countries['BE'];
-            $fr = $countries['FR'];
-            $nl = $countries['NL'];
-            $es = $countries['ES'];
-            $nope = "---------------";
-
-            $countries = [
-                'BE' => $be,
-                'FR' => $fr,
-                'NL' => $nl,
-                'ES' => $es,
-                $nope
-            ] + $countries;
 
             $room_id = $request->query('room', 0);
             $part = $request->query('part', -1);
@@ -149,9 +134,10 @@ Route::middleware(['auth'])->group(function () {
             ->middleware('can:add.booking');
 
         Route::get('{booking}', function (App\Booking $booking) {
+            $countries = PlanningController::getCountryList('nl_BE');
             $guests = Guest::orderBy('lastname')->get();
             $booking->load(['rooms', 'customer']);
-            return view('planning.show', ["booking" => $booking, 'guests' => $guests]);
+            return view('planning.show', ["booking" => $booking, 'guests' => $guests, 'countries' => $countries]);
         })->name('booking.show')->where('booking', '[0-9]+');
 
         Route::get('del/{booking}', function(App\Booking $booking) {
