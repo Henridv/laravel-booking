@@ -32,14 +32,35 @@ class Booking extends Model
     /**
      * get main customer of booking
      */
-	public function customer() {
-		return $this->belongsTo('App\Guest');
-	}
+    public function customer()
+    {
+        return $this->belongsTo('App\Guest');
+    }
+
+    /**
+     * extra guests of the booking
+     */
+    public function extraGuests()
+    {
+        return $this->belongsToMany('App\Guest');
+    }
+
+    public function getGuest($bed)
+    {
+        $first_bed = $this->properties->options['beds'][0];
+        $i = $bed - $first_bed + 1;
+        if ($i === 0 || $i > count($this->extraGuests)) {
+            return $this->customer;
+        } else {
+            return $this->extraGuests->get($i-1);
+        }
+    }
 
     /**
      * get booked room(s)
      */
-    public function rooms() {
+    public function rooms()
+    {
         return $this->belongsToMany('App\Room')
             ->as('properties')
             ->withPivot(['bed', 'options'])
@@ -49,14 +70,16 @@ class Booking extends Model
     /**
      * duration of booking in days
      */
-	public function days() {
-		return $this->arrival->diffInDays($this->departure);
-	}
+    public function days()
+    {
+        return $this->arrival->diffInDays($this->departure);
+    }
 
     /**
      * get tooltip
      */
-    public function getTooltipAttribute() {
+    public function getTooltipAttribute()
+    {
         $tooltip = $this->arrival->format('H:i');
 
         $tooltip .= ($this->composition) ? '<br />'.$this->composition : '';
@@ -68,47 +91,57 @@ class Booking extends Model
     /**
      * get remaining value to pay
      */
-    public function getRemainingAttribute() {
+    public function getRemainingAttribute()
+    {
         return $this->basePrice*(100-$this->discount)/100.0 - $this->deposit;
     }
 
-	/**
-	 * number of days to show in current week
+    /**
+     * number of days to show in current week
      *
      * @param array $dates Dates in visibile week
      *
      * @return int Number of visible days for this booking
-	 */
-	public function toShow($dates) {
-		$start = $week_start = $dates[0]['date']->copy();
-		$end   = $week_end   = $dates[count($dates)-1]['date']->copy();
+     */
+    public function toShow($dates)
+    {
+        $start = $week_start = $dates[0]['date']->copy();
+        $end   = $week_end   = $dates[count($dates)-1]['date']->copy();
 
-		$week_end->addDay();
+        $week_end->addDay();
 
-		if ($this->arrival->gte($week_start)) {
+        if ($this->arrival->gte($week_start)) {
             $start = $this->arrival;
         }
-		if ($this->departure->lte($week_end)){
+        if ($this->departure->lte($week_end)) {
             $end = $this->departure;
         }
         return $start->startOfDay()
                 ->diffInDays($end->startOfDay());
-	}
+    }
 
-	public function color() {
+    /**
+     * get color id and luma for this booking
+     */
+    public function color()
+    {
         $color = $this->customer->color;
 
-        $r = substr($color, 1,2);
-        $g = substr($color, 3,2);
-        $b = substr($color, 5,2);
+        $r = substr($color, 1, 2);
+        $g = substr($color, 3, 2);
+        $b = substr($color, 5, 2);
         $luma = (float)0.2126 * hexdec($r)
             + 0.7152 * hexdec($g)
             + 0.0722 * hexdec($b);
 
         return ['color' => $this->customer->color, 'luma' => $luma];
-	}
+    }
 
-    public function isNow() {
+    /**
+     * check if booking is now
+     */
+    public function isNow()
+    {
         return Carbon::parse("now")->between($this->arrival, $this->departure);
     }
 }

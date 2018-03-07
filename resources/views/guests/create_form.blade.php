@@ -22,13 +22,13 @@
     </div>
     <div class="form-group">
       <label for="country">Land</label>
-      <select class="form-control" name="country" id="country" required>
-        @if(isset($countries))
+      @if(isset($countries))
+        <select class="form-control" name="country" id="country" required>
           @foreach($countries as $code => $name)
             <option value="{{ $code }}" @if(isset($guest) && $guest->country===$code) selected @endif>{{ $name }}</option>
           @endforeach
-        @endif
-      </select>
+        </select>
+      @endif
     </div>
   </div>
 </div>
