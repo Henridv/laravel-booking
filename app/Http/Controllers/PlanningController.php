@@ -121,6 +121,14 @@ class PlanningController extends Controller
     }
 
     /**
+     * Delete extra guest
+     */
+    public function delExtraGuest(Request $request, Booking $booking, Guest $guest)
+    {
+        $booking->extraGuests()->detach($guest);
+        return redirect()->route('booking.show', $booking);
+    }
+    /**
      * Get bookings in the following period
      *
      * @param int $periodInWeeks Period in number of weeks

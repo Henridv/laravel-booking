@@ -1,4 +1,3 @@
-
 /**
  * First, we will load all of this project's Javascript utilities and other
  * dependencies. Then, we will be ready to develop a robust and powerful
@@ -54,7 +53,7 @@ $('#deleteBooking').click(() => {
     window.location.href = delLocaction;
 });
 
-$("#printBtn").click(function(e) {
+$("#printBtn").click(function() {
 	var reinit = $("#planning__data").floatThead('destroy');
 	window.print();
 	reinit();
@@ -72,6 +71,27 @@ $('#customerSelect').on('select2:select', function (e) {
 	if(data.id == "new-guest") {
 		$("#newGuestModal").modal();
 	}
+});
+
+$('.js-extra-guest-select').select2({
+	placeholder: 'Selecteer gast...',
+	theme: "bootstrap"
+});
+
+$('.js-extra-guest-select').on('select2:select', function (e) {
+	var data = e.params.data;
+
+	if(data.id == "new-guest") {
+		$(".new-extra-guest").show();
+	} else {
+		$(".new-extra-guest").hide();
+	}
+});
+
+$('.js-add-extra-guest').click((e) => {
+	e.preventDefault();
+	$("#extraGuestModal").modal();
+	$('#addExtraGuest').prop("disabled", false);
 });
 
 $("#saveGuest").click(function() {
@@ -116,6 +136,58 @@ $("#saveGuest").click(function() {
 		},
 		// Code to run if the request fails; the raw request and
 		// status codes are passed to the function
+		error: function( xhr, status, errorThrown ) {
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );
+		},
+	});
+});
+
+$("#addExtraGuest").click(function() {
+	$(this).prop("disabled", true);
+
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+
+	const bookingId = $(".new-extra-guest").data('booking-id');
+
+	let guest;
+
+	if ($(".new-extra-guest").is(":visible")) {
+		const firstname = $("[name='firstname']").val();
+		const lastname = $("[name='lastname']").val();
+		const email = $("[name='email']").val();
+		const phone = $("[name='phone']").val();
+		const country = $("[name='country']").val();
+
+		guest = {
+			'firstname': firstname,
+			'lastname': lastname,
+			'email': email,
+			'phone': phone,
+			'country': country,
+		};
+	} else {
+		guest = {
+			id: $('[name="extra-guest"]').val()
+		};
+	}
+
+	$.ajax({
+		url: "/planning/addExtraGuest",
+		data: {
+			booking: bookingId,
+			guest: guest,
+		},
+		type: "POST",
+		success: function() {
+			$("#extraGuestModal").modal('hide');
+			location.reload();
+		},
 		error: function( xhr, status, errorThrown ) {
 			console.log( "Error: " + errorThrown );
 			console.log( "Status: " + status );

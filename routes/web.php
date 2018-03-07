@@ -63,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
                 ->with(['bookings' => function ($query) use ($dates) {
                     $query
                     ->with('customer')
+                    ->with('extraGuests')
                     ->where('arrival', '<=', $dates[6]['date'])
                     ->where('departure', '>=', $dates[0]['date']);
                 }])
@@ -147,10 +148,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('edit/{booking}', 'PlanningController@editBooking')
             ->middleware('can:add.booking');
 
-        Route::get('{booking}', function(App\Booking $booking) {
+        Route::get('{booking}', function (App\Booking $booking) {
+            $guests = Guest::orderBy('lastname')->get();
             $booking->load(['rooms', 'customer']);
-            return view('planning.show', ["booking" => $booking]);
-        })->name('booking.show')->where('booking', '[0-9]+');;
+            return view('planning.show', ["booking" => $booking, 'guests' => $guests]);
+        })->name('booking.show')->where('booking', '[0-9]+');
 
         Route::get('del/{booking}', function(App\Booking $booking) {
             $booking->delete();
@@ -166,6 +168,10 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('search', 'PlanningController@search')
             ->name('booking.search');
+
+        Route::post('addExtraGuest', 'AjaxController@addExtraGuest');
+        Route::get('{booking}/del-extra/{guest}', 'PlanningController@delExtraGuest')
+            ->name('booking.extra.delete');
     });
 
     Route::middleware(['can:edit.all'])->prefix('gast')->group(function() {

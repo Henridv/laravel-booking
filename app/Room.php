@@ -61,7 +61,7 @@ class Room extends Model
         if ($bed === "all") {
             return $bookings->groupBy('id');
         } else {
-            foreach($bookings as $booking) {
+            foreach ($bookings as $booking) {
                 if (in_array($bed, $booking->properties->options['beds'])) {
                     return $booking;
                 }

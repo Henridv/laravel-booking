@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use App\Booking;
 use App\Guest;
 
 class AjaxController extends Controller
@@ -50,15 +51,51 @@ class AjaxController extends Controller
 			$r = substr($hash, 0,2);
 			$g = substr($hash, 2,2);
 			$b = substr($hash, 4,2);
-			
+
 			$guest->color = '#'.$r.$g.$b;
 			$guest->save();
 
 			$data['id'] = $guest->id;
-			
+
 			return json_encode($data);
 		} else {
 			return Redirect::to('/');
 		}
 	}
+
+    public function addExtraGuest(Request $request)
+    {
+        if ($request->ajax()) {
+            $booking_id = $request->input('booking');
+            $guest = $request->input('guest');
+
+            $booking = Booking::find($booking_id);
+            if (isset($guest['id'])) {
+                $guest = Guest::find($guest['id']);
+            } else {
+                $guest = new Guest;
+                $guest->firstname = $data['firstname'];
+                $guest->lastname = $data['lastname'];
+                $guest->email = $data['email'];
+                $guest->phone = $data['phone'];
+                $guest->country = $data['country'];
+
+                $name = $guest->firstname .' '. $guest->lastname;
+                $hash = sha1($name);
+
+                $r = substr($hash, 0, 2);
+                $g = substr($hash, 2, 2);
+                $b = substr($hash, 4, 2);
+
+                $guest->color = '#'.$r.$g.$b;
+                $guest->save();
+            }
+
+            $booking->extraGuests()->save($guest);
+
+            return json_encode($guest);
+        } else {
+            return Redirect::to('/');
+        }
+    }
 }

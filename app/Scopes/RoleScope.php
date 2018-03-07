@@ -19,10 +19,12 @@ class RoleScope implements Scope
     public function apply(Builder $builder, Model $model)
     {
         // filter out ext/int bookings based on gates
-        if (Auth::user()->can('view.only.external')) {
-            $builder->where('ext_booking', true);
-        } elseif (Auth::user()->can('view.only.internal')) {
-            $builder->where('ext_booking', false);
+        if (Auth::check()) {
+            if (Auth::user()->can('view.only.external')) {
+                $builder->where('ext_booking', true);
+            } elseif (Auth::user()->can('view.only.internal')) {
+                $builder->where('ext_booking', false);
+            }
         }
     }
 }

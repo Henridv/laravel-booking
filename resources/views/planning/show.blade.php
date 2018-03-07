@@ -83,6 +83,8 @@
       </tr>
     </table>
   </div>
+
+  {{-- booker info --}}
   <div class="col-sm">
     <h3>Boeker
       @can('edit.booking')
@@ -111,10 +113,38 @@
         <td>{{ $booking->customer->country_str }}</td>
       </tr>
     </table>
+
+
+    @unless($booking->guests === 1)
+    <h3>Extra gasten</h3>
+    @endunless
+
+    @unless($booking->extraGuests->isEmpty())
+    <table class="table table-hover mt-2" id="extraGuestTable">
+    <thead>
+      <tr>
+        <th>Naam</th>
+        <th></th>
+      </tr>
+    </thead>
+    @foreach($booking->extraGuests as $guest)
+      <tr>
+        <td>{{ $guest->name }}</td>
+        <td class="text-right">
+          {{-- <a href="" class="btn btn-primary js-edit-extra-guest" data-guest-id="{{ $guest-> id }}"><i class="fas fa-pencil-alt"> </i></a> --}}
+          <a href="{{ route('booking.extra.delete', [$booking, $guest]) }}" class="btn btn-danger"><i class="far fa-trash-alt"> </i></a>
+        </td>
+      </tr>
+    @endforeach
+    </table>
+    @endunless
+    @if ($booking->extraGuests->count() < $booking->guests-1)
+      <p><a href="" class="btn btn-primary js-add-extra-guest">Extra gast toevoegen</a></p>
+    @endif
   </div>
 </div>
 
-
+@can('edit.booking')
 <div class="modal" id="deleteBookingModal" tabindex="-1" role="dialog" aria-labelledby="deleteBookingLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -134,4 +164,38 @@
     </div>
   </div>
 </div>
+
+<div class="modal" id="extraGuestModal" tabindex="-1" role="dialog" aria-labelledby="extraGuestModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Extra gast</h5>
+        <button class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <select class="form-control custom-select mt-2 js-extra-guest-select" name="extra-guest" placeholder="Selecteer gast..." id="guestSelect">
+          <option></option>
+          <option value="new-guest">Nieuwe gast...</option>
+          @foreach($guests as $guest)
+            <option
+              @if(isset($booking) && $booking->customer_id == $guest->id) selected @endif value="{{ $guest->id }}">{{ $guest->name }}</option>
+          @endforeach
+        </select>
+
+        @php unset($guest) @endphp
+        <div class="new-extra-guest" style="display: none" data-booking-id="{{ $booking->id }}">
+          @include('guests.create_form')
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+        <button class="btn btn-primary" id="addExtraGuest">Opslaan</button>
+      </div>
+    </div>
+  </div>
+</div>
+@endcan
+
 @endsection
