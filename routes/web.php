@@ -18,6 +18,7 @@ use App\Booking;
 use App\Guest;
 use App\User;
 use App\Role;
+use App\Note;
 
 use App\Http\Controllers\PlanningController;
 
@@ -48,6 +49,9 @@ Route::middleware(['auth'])->group(function () {
 
             Carbon::setWeekStartsAt(Carbon::SATURDAY);
             $date = (new Carbon($request->query('date', "now")))->startOfWeek();
+
+            $note = Note::where('week_start', $date)->first();
+
             $dates = [];
             for ($i=0; $i < 7; $i++) {
                 $dates[$i] = [
@@ -69,7 +73,11 @@ Route::middleware(['auth'])->group(function () {
                 }])
                 ->get();
 
-            return view('planning.index', ['rooms' => $rooms, 'dates' => $dates]);
+            return view('planning.index', [
+                'rooms' => $rooms,
+                'dates' => $dates,
+                'note' => $note,
+            ]);
         })->name('planning');
 
         Route::post('goto_date', function(Request $request) {
@@ -294,5 +302,9 @@ Route::middleware(['auth'])->group(function () {
                     ->with('success', 'User deleted sucessfully');
             })->name('user.del');
         });
+    });
+
+    Route::middleware(['can:edit.all'])->prefix('notes')->group(function () {
+        Route::post('save', 'AjaxController@saveNote');
     });
 });

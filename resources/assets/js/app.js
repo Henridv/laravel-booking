@@ -12,6 +12,12 @@ require('./jquery.floatThead');
 
 var moment = require('moment');
 
+$.ajaxSetup({
+	headers: {
+		'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	}
+});
+
 $(function(){
     $('html').keydown(function(e){
         if ($('.btns__week').length > 0) {
@@ -148,12 +154,6 @@ $("#saveGuest").click(function() {
 $("#addExtraGuest").click(function() {
 	$(this).prop("disabled", true);
 
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
-
 	const bookingId = $(".new-extra-guest").data('booking-id');
 
 	let guest;
@@ -199,6 +199,29 @@ $("#addExtraGuest").click(function() {
 
 $('.booked').tooltip();
 
+let wto;
+$("#weeklyNotes").keypress(function() {
+	clearTimeout(wto);
+
+	const date = $(this).data('date');
+	const noteId = $(this).data('note-id');
+	wto = setTimeout(() => {
+		$.ajax({
+			url: "/notes/save",
+			data: {
+				noteId: noteId,
+				date: date,
+				note: $("#weeklyNotes").val()
+			},
+			type: "POST",
+			error: (xhr, status, error) => console.log(error)
+		});
+	}, 1000);
+});
+
+/**
+ * datepicker
+ */
 var datepicker_options = {
     format: 'dd-mm-yyyy',
     weekStart: 6,

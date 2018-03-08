@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use Carbon\Carbon;
+
 use App\Booking;
 use App\Guest;
+use App\Note;
 
 class AjaxController extends Controller
 {
@@ -96,6 +99,21 @@ class AjaxController extends Controller
             return json_encode($guest);
         } else {
             return Redirect::to('/');
+        }
+    }
+
+    public function saveNote(Request $request)
+    {
+        if ($request->ajax()) {
+            $week_start = Carbon::parse($request->input('date'));
+            $text = $request->input('note');
+            $note_id = $request->input('noteId');
+
+            $note = Note::firstOrNew(['week_start' => $week_start]);
+            $note->notes = $text;
+            $note->save();
+
+            return json_encode(['ok']);
         }
     }
 }

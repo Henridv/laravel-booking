@@ -30,6 +30,14 @@
   </div>
 </div>
 
+<div class="row mb-2">
+  <div class="col-sm d-flex justify-content-between">
+    <textarea class="form-control" placeholder="Notities voor deze week..." id="weeklyNotes"
+      data-date="{{ $dates[0]['date']->format('Y-m-d') }}"
+      @isset($note) data-note-id="{{ $note->id }}" @endisset>@isset($note){{ $note->notes }}@endisset</textarea>
+  </div>
+</div>
+
 <div id="planning__container" class="table-responsive">
 <table class="table table-bordered" id="planning__data">
   <thead>
