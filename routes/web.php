@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 use App\Room;
 use App\Booking;
+use App\Extra;
 use App\Guest;
 use App\User;
 use App\Role;
@@ -172,9 +173,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('export-emails', 'ExportController@exportEmails')->name('export.email');
     });
 
-    Route::middleware(['can:edit.all'])->prefix('gast')->group(function() {
+    Route::middleware(['can:edit.all'])->prefix('gast')->group(function () {
 
-        Route::get('edit/{booking}/{guest}', function(App\Booking $booking, App\Guest $guest) {
+        Route::get('edit/{booking}/{guest}', function (App\Booking $booking, App\Guest $guest) {
             $countries = CountryList::all(app()->getLocale());
 
             // move most common picks to front of array
@@ -208,7 +209,7 @@ Route::middleware(['auth'])->group(function () {
         })->name('guest.delete');
     });
 
-    Route::middleware('can:edit.all')->prefix('kamers')->group(function() {
+    Route::middleware('can:edit.all')->prefix('kamers')->group(function () {
         Route::get('/', function() {
             $rooms = Room::orderBy('sorting')->get();
             return view('rooms.index', ['rooms' => $rooms]);
@@ -265,9 +266,15 @@ Route::middleware(['auth'])->group(function () {
         })->name('room.sort.down');
     });
 
-    Route::get('extras', function() {
-        return view('welcome');
-    })->name('extra')->middleware('can:edit.all');
+    Route::middleware('can:edit.all')->prefix('extras')->group(function () {
+        Route::get('/', 'ExtraController@index')->name('extra');
+
+        Route::get('del/{extra}', function (Extra $extra) {
+            $extra->delete();
+
+            return redirect()->route('extra');
+        })->name('extra.delete');
+    });
 
     Route::middleware('can:access.admin')->prefix('admin')->group(function () {
         Route::get('/', function () {
