@@ -148,10 +148,12 @@ Route::middleware(['auth'])->group(function () {
             return view('planning.show', ["booking" => $booking, 'guests' => $guests, 'countries' => $countries]);
         })->name('booking.show')->where('booking', '[0-9]+');
 
-        Route::get('del/{booking}', function(App\Booking $booking) {
+        Route::get('del/{booking}', function (App\Booking $booking) {
+            $arrival = $booking->arrival->toDateString();
+
             $booking->delete();
 
-            return redirect()->route('planning');
+            return redirect()->route('planning', ['date' => $arrival]);
         })->name('booking.delete');
 
         Route::get('getGuests', 'AjaxController@getGuests')
