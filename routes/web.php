@@ -166,6 +166,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('addExtraGuest', 'AjaxController@addExtraGuest');
         Route::get('{booking}/del-extra/{guest}', 'PlanningController@delExtraGuest')
             ->name('booking.extra.delete');
+
+        Route::get('export-emails', 'ExportController@exportEmails')->name('export.email');
     });
 
     Route::middleware(['can:edit.all'])->prefix('gast')->group(function() {

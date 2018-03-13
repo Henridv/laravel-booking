@@ -93,8 +93,8 @@ class Room extends Model
      *
      * @return array Returns an array of free beds in the room for specified dates
      */
-    public function findFreeBeds($booking, $part = -1) {
-
+    public function findFreeBeds($booking, $part = -1)
+    {
         // find bookings in this room with overlapping dates
         $overlap = $this->bookings()
             ->where('arrival', '<', $booking->departure->startOfDay())
@@ -105,27 +105,28 @@ class Room extends Model
         // which beds are taken
         $beds_taken = [];
         foreach ($overlap as $o) {
-            if ($o->properties->options['asWhole'])
+            if ($o->properties->options['asWhole']) {
                 return [];
-            else
+            } else {
                 $beds_taken = array_merge($beds_taken, $o->properties->options['beds']);
+            }
         }
         $beds_taken = array_unique($beds_taken);
 
-		// get all beds in specific part
-		$all_beds = range(1,$this->beds);
-		if ($part !== -1) {
-			$beds_in_part = [];
-			foreach($this->layout as $l) {
-				$beds_in_part[] = array_splice($all_beds, 0, $l);
-			}
-		}
-		$potential = ($part === -1) ? $all_beds : $beds_in_part[$part];
+        // get all beds in specific part
+        $all_beds = range(1, $this->beds);
+        if ($part !== -1) {
+            $beds_in_part = [];
+            foreach ($this->layout as $l) {
+                $beds_in_part[] = array_splice($all_beds, 0, $l);
+            }
+        }
+        $potential = ($part === -1) ? $all_beds : $beds_in_part[$part];
 
-		$beds_available = array_values(array_diff($potential, $beds_taken));
+        $beds_available = array_values(array_diff($potential, $beds_taken));
 
-		return $beds_available;
-	}
+        return $beds_available;
+    }
 
 	public function moveUp() {
 		$higher = Room::where('sorting', '<', $this->sorting)
