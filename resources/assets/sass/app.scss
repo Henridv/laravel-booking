@@ -43,10 +43,39 @@ table.floatThead-table {
   display: block;
 }
 
-.table-print {
+#planning__data.table-print {
   table-layout: fixed;
+  td {
+    white-space: unset;
+  }
   td hr:last-child {
     display: none;
+  }
+
+  .booking-card {
+    text-align: left;
+    span:first-child {
+      font-weight: bold;
+    }
+  }
+
+  .fa-ul {
+    margin-top: 5px;
+    margin-left: 25px;
+    margin: 10px 0 0 25px;
+  }
+}
+
+.print-notes {
+  &>div {
+    border: 1px solid $gray-300;
+  }
+  h4 {
+    text-transform: uppercase;
+  }
+  p {
+    margin: 0;
+    white-space: pre;
   }
 }
 

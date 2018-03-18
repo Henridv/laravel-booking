@@ -44,6 +44,9 @@ Route::middleware(['auth'])->group(function () {
         ]);
     })->name('welcome');
 
+    /**
+     * PLANNING
+     */
     Route::prefix('planning')->group(function () {
 
         Route::get('/', function (Request $request) {
@@ -81,7 +84,7 @@ Route::middleware(['auth'])->group(function () {
             ]);
         })->name('planning');
 
-        Route::post('goto_date', function(Request $request) {
+        Route::post('goto_date', function (Request $request) {
             $date = Carbon::parse($request->input('goto_date', "now"))->toDateString();
             return redirect()->route('planning', ['date' => $date]);
         })->name('planning.change_date');
@@ -109,7 +112,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('nieuw', 'PlanningController@createBooking')
             ->middleware('can:add.booking');
 
-        Route::get('edit/{booking}', function(Booking $booking) {
+        Route::get('edit/{booking}', function (Booking $booking) {
             $countries = CountryList::all(app()->getLocale());
 
             // move most common picks to front of array
@@ -179,8 +182,13 @@ Route::middleware(['auth'])->group(function () {
             ->name('booking.extras.delete');
 
         Route::get('export-emails', 'ExportController@exportEmails')->name('export.email');
+
+        Route::get('print', 'PrintController@print')->name('print');
     });
 
+    /**
+     * GUESTS
+     */
     Route::middleware(['can:edit.all'])->prefix('gast')->group(function () {
 
         Route::get('edit/{booking}/{guest}', function (App\Booking $booking, App\Guest $guest) {
@@ -217,6 +225,9 @@ Route::middleware(['auth'])->group(function () {
         })->name('guest.delete');
     });
 
+    /**
+     * ROOMS
+     */
     Route::middleware('can:edit.all')->prefix('kamers')->group(function () {
         Route::get('/', function() {
             $rooms = Room::orderBy('sorting')->get();
@@ -341,6 +352,9 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
+    /**
+     * WEEKLY NOTES
+     */
     Route::middleware(['can:edit.all'])->prefix('notes')->group(function () {
         Route::post('save', 'AjaxController@saveNote');
     });

@@ -8,8 +8,14 @@
     visibility: hidden;
   }
 
-  #planning__data, #planning__data * {
+  #planning__data, #planning__data *, .print-notes * {
     visibility: visible;
+  }
+
+  .print-notes {
+    position: absolute;
+    left: 0;
+    top: 0;
   }
 
   #planning__container {
@@ -62,5 +68,4 @@
     color: black;
     text-shadow: 0 0 2px #fff;
   }
-
 }
