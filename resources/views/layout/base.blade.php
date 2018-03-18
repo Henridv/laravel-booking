@@ -64,7 +64,7 @@
             </nav>
         @show
 
-        <div class="container">
+        <div class="@isset($planning_table) container-fluid @else container @endisset">
             @yield('content')
         </div>
 
