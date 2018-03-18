@@ -197,6 +197,44 @@ $("#addExtraGuest").click(function() {
 	});
 });
 
+$('.js-add-extra').click((e) => {
+	e.preventDefault();
+	$("#extrasModal").modal();
+});
+
+$('#addExtra').click(function (e) {
+	$(this).prop("disabled", true);
+	e.preventDefault();
+
+	const bookingId = $(".new-extra-guest").data('booking-id');
+	const extraId = $('select[name="extra"]').val();
+	const amount = $('input[name="amount"]').val();
+
+	console.log({
+		booking: bookingId,
+		extra: extraId,
+		amount
+	});
+	$.ajax({
+		url: "/planning/addExtra",
+		data: {
+			booking: bookingId,
+			extra: extraId,
+			amount
+		},
+		type: "POST",
+		success: () => {
+			$("#extrasModal").modal('hide');
+			location.reload();
+		},
+		error: function( xhr, status, errorThrown ) {
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );
+		},
+	});
+});
+
 $('.booked').tooltip();
 
 let wto;

@@ -69,7 +69,7 @@ class Booking extends Model
 
     public function extras()
     {
-        return $this->belongsToMany('App\Extra');
+        return $this->belongsToMany('App\Extra')->withPivot('amount');
     }
 
     /**

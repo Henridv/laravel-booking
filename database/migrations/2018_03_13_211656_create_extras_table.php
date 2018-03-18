@@ -26,6 +26,8 @@ class CreateExtrasTable extends Migration
             $table->integer('booking_id')->unsigned();
             $table->integer('extra_id')->unsigned();
 
+            $table->integer('amount');
+
             $table->foreign('booking_id')
                 ->references('id')
                 ->on('bookings')

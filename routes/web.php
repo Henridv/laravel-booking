@@ -146,7 +146,11 @@ Route::middleware(['auth'])->group(function () {
             $countries = PlanningController::getCountryList('nl_BE');
             $guests = Guest::orderBy('lastname')->get();
             $booking->load(['rooms', 'customer']);
-            return view('planning.show', ["booking" => $booking, 'guests' => $guests, 'countries' => $countries]);
+            return view('planning.show', [
+                "booking" => $booking,
+                'guests' => $guests,
+                'countries' => $countries,
+                'extras' => Extra::all()]);
         })->name('booking.show')->where('booking', '[0-9]+');
 
         Route::get('del/{booking}', function (App\Booking $booking) {
@@ -167,8 +171,12 @@ Route::middleware(['auth'])->group(function () {
             ->name('booking.search');
 
         Route::post('addExtraGuest', 'AjaxController@addExtraGuest');
-        Route::get('{booking}/del-extra/{guest}', 'PlanningController@delExtraGuest')
+        Route::get('{booking}/del-extra-guest/{guest}', 'PlanningController@delExtraGuest')
             ->name('booking.extra.delete');
+
+        Route::post('addExtra', 'ExtraController@addExtra');
+        Route::get('{booking}/del-extra/{extra}', 'PlanningController@delExtra')
+            ->name('booking.extras.delete');
 
         Route::get('export-emails', 'ExportController@exportEmails')->name('export.email');
     });
@@ -266,6 +274,9 @@ Route::middleware(['auth'])->group(function () {
         })->name('room.sort.down');
     });
 
+    /**
+     * EXTRAS
+     */
     Route::middleware('can:edit.all')->prefix('extras')->group(function () {
         Route::get('/', 'ExtraController@index')->name('extra');
 
@@ -288,6 +299,9 @@ Route::middleware(['auth'])->group(function () {
         })->name('extra.delete');
     });
 
+    /**
+     * ADMIN
+     */
     Route::middleware('can:access.admin')->prefix('admin')->group(function () {
         Route::get('/', function () {
             $rooms = Room::orderBy('sorting')->get();

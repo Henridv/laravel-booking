@@ -1,5 +1,7 @@
 @extends('layout.base')
 
+@section('title', $booking->customer->name)
+
 @section('content')
 
 <a class="btn btn-primary mt-2 mb-4" href="{{ route('planning', ['date' => $booking->arrival->toDateString() ]) }}">
@@ -139,6 +141,37 @@
   </div>
 </div>
 
+<h3>Extra's
+  <a href="" class="btn btn-primary float-right js-add-extra">Extra toevoegen</a>
+</h3>
+
+@unless($booking->extras->isEmpty())
+<table class="table table-hover mt-2" id="extrasTable">
+  <thead class="thead-dark">
+    <tr>
+      <th>Aantal</th>
+      <th>Naam</th>
+      <th>Prijs</th>
+      <th>Per</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+@foreach($booking->extras as $extra)
+  <tr>
+    <td>{{ $extra->pivot->amount }}</td>
+    <td>{{ $extra->name }}</td>
+    <td>&euro; {{ $extra->price }}</td>
+    <td>{{ $extra->per }}</td>
+    <td class="text-right">
+      <a href="{{ route('booking.extras.delete', [$booking, $extra]) }}" class="btn btn-danger"><i class="far fa-trash-alt"> </i></a>
+    </td>
+  </tr>
+@endforeach
+</table>
+@else
+<p class="alert alert-light">Geen extra's voor deze boeking.</p>
+@endunless
+
 @can('edit.booking')
 <div class="modal" id="deleteBookingModal" tabindex="-1" role="dialog" aria-labelledby="deleteBookingLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -187,6 +220,32 @@
       <div class="modal-footer">
         <button class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
         <button class="btn btn-primary" id="addExtraGuest">Opslaan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="extrasModal" tabindex="-1" role="dialog" aria-labelledby="extrasModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="extrasModalLabel">Extra toevoegen</h5>
+        <button class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <select class="form-control custom-select my-2" name="extra" placeholder="Selecteer extra..." id="extraSelect">
+          @foreach($extras as $extra)
+            <option value="{{ $extra->id }}">{{ $extra->name }}</option>
+          @endforeach
+        </select>
+
+        <input class="form-control" name="amount" placeholder="Aantal" type=number min=1 />
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+        <button class="btn btn-primary" id="addExtra">Voeg toe</button>
       </div>
     </div>
   </div>
