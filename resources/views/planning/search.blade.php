@@ -34,7 +34,7 @@
       </td>
       <td>{{ $booking->customer->country_str }}</td>
       <td>{{ $booking->guests }}</td>
-      <td>{{ $booking->rooms[0]->name }}</td>
+      <td>@isset($booking->rooms[0]){{ $booking->rooms[0]->name }}@endisset</td>
     </tr>
     @endforeach
   </tbody>
