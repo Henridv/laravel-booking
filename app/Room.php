@@ -93,15 +93,20 @@ class Room extends Model
      *
      * @return array Returns an array of free beds in the room for specified dates
      */
-    public function findFreeBeds($booking, $part = -1)
+    public function findFreeBeds($booking, $part = -1, $as_whole = false)
     {
         // find bookings in this room with overlapping dates
         $overlap = $this->bookings()
-            ->where('arrival', '<', $booking->departure->startOfDay())
-            ->where('departure', '>', $booking->arrival->startOfDay())
+            ->whereDate('arrival', '<', $booking->departure)
+            ->whereDate('departure', '>', $booking->arrival)
             ->where('booking_id', '!=', $booking->id)
             ->get();
 
+        // when the room is being booked as whole and there's overlap
+        // it means there's other bookings, so it can't be booked as whole
+        if ($as_whole && $overlap->count() > 0) {
+            return [];
+        }
         // which beds are taken
         $beds_taken = [];
         foreach ($overlap as $o) {
