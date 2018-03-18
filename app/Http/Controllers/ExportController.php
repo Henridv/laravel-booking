@@ -27,6 +27,8 @@ class ExportController extends Controller
         }
         fclose($fhandle);
 
-        return response()->download($path, $filename)->deleteFileAfterSend(true);
+        $headers = ['Content-Type: text/csv'];
+
+        return response()->download($path, $filename, $headers)->deleteFileAfterSend(true);
     }
 }
