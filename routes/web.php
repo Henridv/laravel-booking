@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 use App\Room;
 use App\Booking;
+use App\Extra;
 use App\Guest;
 use App\User;
 use App\Role;
@@ -145,7 +146,11 @@ Route::middleware(['auth'])->group(function () {
             $countries = PlanningController::getCountryList('nl_BE');
             $guests = Guest::orderBy('lastname')->get();
             $booking->load(['rooms', 'customer']);
-            return view('planning.show', ["booking" => $booking, 'guests' => $guests, 'countries' => $countries]);
+            return view('planning.show', [
+                "booking" => $booking,
+                'guests' => $guests,
+                'countries' => $countries,
+                'extras' => Extra::all()]);
         })->name('booking.show')->where('booking', '[0-9]+');
 
         Route::get('del/{booking}', function (App\Booking $booking) {
@@ -166,15 +171,19 @@ Route::middleware(['auth'])->group(function () {
             ->name('booking.search');
 
         Route::post('addExtraGuest', 'AjaxController@addExtraGuest');
-        Route::get('{booking}/del-extra/{guest}', 'PlanningController@delExtraGuest')
+        Route::get('{booking}/del-extra-guest/{guest}', 'PlanningController@delExtraGuest')
             ->name('booking.extra.delete');
+
+        Route::post('addExtra', 'ExtraController@addExtra');
+        Route::get('{booking}/del-extra/{extra}', 'PlanningController@delExtra')
+            ->name('booking.extras.delete');
 
         Route::get('export-emails', 'ExportController@exportEmails')->name('export.email');
     });
 
-    Route::middleware(['can:edit.all'])->prefix('gast')->group(function() {
+    Route::middleware(['can:edit.all'])->prefix('gast')->group(function () {
 
-        Route::get('edit/{booking}/{guest}', function(App\Booking $booking, App\Guest $guest) {
+        Route::get('edit/{booking}/{guest}', function (App\Booking $booking, App\Guest $guest) {
             $countries = CountryList::all(app()->getLocale());
 
             // move most common picks to front of array
@@ -208,7 +217,7 @@ Route::middleware(['auth'])->group(function () {
         })->name('guest.delete');
     });
 
-    Route::middleware('can:edit.all')->prefix('kamers')->group(function() {
+    Route::middleware('can:edit.all')->prefix('kamers')->group(function () {
         Route::get('/', function() {
             $rooms = Room::orderBy('sorting')->get();
             return view('rooms.index', ['rooms' => $rooms]);
@@ -265,10 +274,34 @@ Route::middleware(['auth'])->group(function () {
         })->name('room.sort.down');
     });
 
-    Route::get('extras', function() {
-        return view('welcome');
-    })->name('extra')->middleware('can:edit.all');
+    /**
+     * EXTRAS
+     */
+    Route::middleware('can:edit.all')->prefix('extras')->group(function () {
+        Route::get('/', 'ExtraController@index')->name('extra');
 
+        Route::get('new', function () {
+            return view('extra.create');
+        })->name('extra.create');
+
+        Route::post('new', 'ExtraController@createExtra');
+
+        Route::get('edit/{extra}', function (Extra $extra) {
+            return view('extra.create', ['extra' => $extra]);
+        })->name('extra.edit');
+
+        Route::post('edit/{extra}', 'ExtraController@editExtra');
+
+        Route::get('del/{extra}', function (Extra $extra) {
+            $extra->delete();
+
+            return redirect()->route('extra');
+        })->name('extra.delete');
+    });
+
+    /**
+     * ADMIN
+     */
     Route::middleware('can:access.admin')->prefix('admin')->group(function () {
         Route::get('/', function () {
             $rooms = Room::orderBy('sorting')->get();

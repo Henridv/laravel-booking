@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 use App\Booking;
-use App\Room;
+use App\Extra;
 use App\Guest;
+use App\Room;
 
 use CountryList;
 
@@ -130,6 +131,16 @@ class PlanningController extends Controller
         $booking->extraGuests()->detach($guest);
         return redirect()->route('booking.show', $booking);
     }
+
+    /**
+     * Delete extra
+     */
+    public function delExtra(Request $request, Booking $booking, Extra $extra)
+    {
+        $booking->extras()->detach($extra);
+        return redirect()->route('booking.show', $booking);
+    }
+
     /**
      * Get bookings in the following period
      *

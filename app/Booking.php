@@ -67,6 +67,11 @@ class Booking extends Model
             ->using('App\BookingProperties');
     }
 
+    public function extras()
+    {
+        return $this->belongsToMany('App\Extra')->withPivot('amount');
+    }
+
     /**
      * duration of booking in days
      */
