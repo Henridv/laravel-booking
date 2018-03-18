@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
         $bookings = PlanningController::getBookings(2);
 
         $leaving = Booking::
-            where('departure', Carbon::parse('today'))
+            whereDate('departure', Carbon::parse('today'))
             ->join('guests', 'guests.id', '=', 'bookings.customer_id')
             ->select('bookings.*', 'guests.firstname', 'guests.lastname')
             ->orderBy('guests.lastname')
@@ -69,8 +69,8 @@ Route::middleware(['auth'])->group(function () {
                     $query
                     ->with('customer')
                     ->with('extraGuests')
-                    ->where('arrival', '<=', $dates[6]['date'])
-                    ->where('departure', '>=', $dates[0]['date']);
+                    ->whereDate('arrival', '<=', $dates[6]['date'])
+                    ->whereDate('departure', '>=', $dates[0]['date']);
                 }])
                 ->get();
 
