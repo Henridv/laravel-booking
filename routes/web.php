@@ -269,6 +269,18 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('can:edit.all')->prefix('extras')->group(function () {
         Route::get('/', 'ExtraController@index')->name('extra');
 
+        Route::get('new', function () {
+            return view('extra.create');
+        })->name('extra.create');
+
+        Route::post('new', 'ExtraController@createExtra');
+
+        Route::get('edit/{extra}', function (Extra $extra) {
+            return view('extra.create', ['extra' => $extra]);
+        })->name('extra.edit');
+
+        Route::post('edit/{extra}', 'ExtraController@editExtra');
+
         Route::get('del/{extra}', function (Extra $extra) {
             $extra->delete();
 

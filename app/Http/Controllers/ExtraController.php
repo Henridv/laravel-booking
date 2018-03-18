@@ -12,4 +12,54 @@ class ExtraController extends Controller
     {
         return view('extra.index', ['extras' => Extra::all()]);
     }
+
+    public function saveExtra(Request $request, Extra $extra)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'per' => 'required|string',
+        ]);
+
+        $extra->name = $request->input('name');
+        $extra->price = $request->input('price');
+        $extra->per = $request->input('per');
+
+        $extra->save();
+
+        return true;
+    }
+
+    public function editExtra(Request $request, Extra $extra)
+    {
+        $result = $this->saveExtra($request, $extra);
+
+        if ($result) {
+            return redirect()
+                ->route('extra')
+                ->with('success', 'Extra succesvol gewijzigd');
+        } else {
+            return redirect()
+                ->route('extra.edit', ['extra' => $extra])
+                ->with('error', 'Fout bij het wijzigen')
+                ->withInput();
+        }
+    }
+
+    public function createExtra(Request $request)
+    {
+        $extra = new Extra;
+        $result = $this->saveExtra($request, $extra);
+
+        if ($result) {
+            return redirect()
+                ->route('extra')
+                ->with('success', 'Extra toegevoegd');
+        } else {
+            return redirect()
+                ->route('extra.create')
+                ->with('error', 'Fout bij het toevoegen')
+                ->withInput();
+        }
+    }
 }
