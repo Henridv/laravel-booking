@@ -73,7 +73,8 @@
               class="booked @if ($booking->color()['luma'] > 180.0) reversed @endif"
               style="background-color: {{ $booking->color()['color'] }}">
               <a href="{{ route('booking.show', $booking->id) }}">
-                {{ $booking->getGuest($i)->name }} &mdash; &euro;&nbsp;{{ $booking->deposit }}</a>
+                {{ $booking->getGuest($i)->name }}
+                @if ($booking->isFirst($i)) &mdash; &euro;&nbsp;{{ $booking->deposit }} @endif</a>
             </td>
             @php $d += ($booking->toShow($dates)-1) @endphp
           @elseif (!$room->bookings->isEmpty() && $room->isBookedAsWhole($date['date']))

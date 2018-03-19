@@ -56,6 +56,13 @@ class Booking extends Model
         }
     }
 
+    public function isFirst($bed)
+    {
+        $first_bed = $this->properties->options['beds'][0];
+        $i = $bed - $first_bed + 1;
+        return $i === 0;
+    }
+
     /**
      * get booked room(s)
      */
