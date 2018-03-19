@@ -1,5 +1,9 @@
 @extends('layout.base')
 
+@section('title', 'Planning - ' . $dates[0]['date']->format('d-m-Y'))
+
+@php $planning_table = true; @endphp
+
 @section('content')
 <h1>Planning</h1>
 
