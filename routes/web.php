@@ -21,6 +21,8 @@ use App\User;
 use App\Role;
 use App\Note;
 
+use App\Events\BookingDeletedEvent;
+
 use App\Http\Controllers\PlanningController;
 
 use Carbon\Carbon;
@@ -157,11 +159,15 @@ Route::middleware(['auth'])->group(function () {
         })->name('booking.show')->where('booking', '[0-9]+');
 
         Route::get('del/{booking}', function (App\Booking $booking) {
-            $arrival = $booking->arrival->toDateString();
+            $arrival = $booking->arrival;
+            $departure = $booking->departure;
+            $room = $booking->rooms[0];
 
             $booking->delete();
 
-            return redirect()->route('planning', ['date' => $arrival]);
+            event(new BookingDeletedEvent($room, $arrival, $departure));
+
+            return redirect()->route('planning', ['date' => $arrival->toDateString()]);
         })->name('booking.delete');
 
         Route::get('getGuests', 'AjaxController@getGuests')

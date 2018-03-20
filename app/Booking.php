@@ -5,10 +5,15 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
+use App\Events\BookingUpdatedEvent;
 use App\Scopes\RoleScope;
 
 class Booking extends Model
 {
+
+    protected $dispatchesEvents = [
+        'updated' => BookingUpdatedEvent::class
+    ];
 
     protected $dates = [
         'created_at',

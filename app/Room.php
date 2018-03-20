@@ -133,17 +133,37 @@ class Room extends Model
         return $beds_available;
     }
 
-	public function moveUp() {
-		$higher = Room::where('sorting', '<', $this->sorting)
-					->orderBy('sorting', 'desc')->first();
-		if ($higher) {
-			$higher->sorting = $this->sorting;
-			$higher->save();
-		}
+    public function organize($arrival, $departure)
+    {
+        $bookings = $this->bookings
+            ->where('arrival', '<', $departure->startOfDay())
+            ->where('departure', '>', $arrival->startOfDay());
 
-		$this->sorting--;
-		$this->save();
-	}
+        foreach ($bookings as $booking) {
+            $options = $booking->properties->options;
+            $part = $options['part'];
+
+            $beds = $this->findFreeBeds($booking, $part);
+
+            if (count($beds) >= $booking->guests) {
+                $options['beds'] = array_slice($beds, 0, $booking->guests);
+                $this->bookings()->updateExistingPivot($booking->id, ['options' => $options]);
+            }
+        }
+    }
+
+    public function moveUp()
+    {
+        $higher = Room::where('sorting', '<', $this->sorting)
+                    ->orderBy('sorting', 'desc')->first();
+        if ($higher) {
+            $higher->sorting = $this->sorting;
+            $higher->save();
+        }
+
+        $this->sorting--;
+        $this->save();
+    }
 
 	public function moveDown() {
 		$lower = Room::where('sorting', '>', $this->sorting)
