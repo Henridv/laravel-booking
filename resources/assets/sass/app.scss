@@ -67,7 +67,7 @@ table.floatThead-table {
 }
 
 .print-notes {
-  &>div {
+  &>div>div {
     border: 1px solid $gray-300;
   }
   h4 {

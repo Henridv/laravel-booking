@@ -8,20 +8,30 @@
     visibility: hidden;
   }
 
-  #planning__data, #planning__data *, .print-notes * {
+  #planning__data, #planning__data *,
+  .print-notes, .print-notes * {
     visibility: visible;
   }
 
-  .print-notes {
+  .print-notes > div {
     position: absolute;
     left: 0;
     top: 0;
+    padding: 0;
+  }
+
+  .print-notes > div > div {
+    height: 100px;
   }
 
   #planning__container {
     position: absolute;
     left: 0;
     top: 0;
+  }
+
+  .print-notes + #planning__container {
+    top: 100px;
   }
 
   #planning__data {

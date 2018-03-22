@@ -1,6 +1,6 @@
 @extends('layout.base')
 
-@section('title', 'Print')
+@section('title', 'Planning - ' . $dates[0]['date']->format('d-m-Y'))
 
 @php $planning_table = true; @endphp
 
@@ -26,8 +26,8 @@
 
 {{-- notes --}}
 @isset($note)
-  <div class="row mb-1">
-    <div class="col-sm print-notes">
+  <div class="row mb-1 print-notes">
+    <div class="col-sm">
       <div>
         <p class="p-3">{{ $note->notes }}</p>
       </div>

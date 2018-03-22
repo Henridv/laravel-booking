@@ -27,7 +27,7 @@
 
     <div>
       <a href="{{ route('export.email', ['date' => $dates[0]['date']->toDateString()]) }}" class="btn btn-secondary mb-2">Export emailadressen</a>
-      <a href="#" id="printBtn" class="btn btn-secondary mb-2">Print <i class="fas fa-print fa-sm"></i></a>
+      <a href="{{ route('print', ['date' => $dates[0]['date']->toDateString()]) }}" class="btn btn-secondary mb-2">Print <i class="fas fa-print fa-sm"></i></a>
       @can('add.booking')
       <a href="{{ route('booking.create') }}?date={{ $dates[0]['date']->toDateString() }}" class="btn btn-success mb-2">Nieuwe boeking</a>
       @endcan
