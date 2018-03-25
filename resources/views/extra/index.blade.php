@@ -11,6 +11,7 @@
         <th>Naam</th>
         <th>Prijs</th>
         <th>Per</th>
+        <th>Icoon</th>
         <th width="5%"></th>
     </tr>
     </thead>
@@ -20,6 +21,7 @@
             <td>{{ $extra->name }}</td>
             <td>&euro; {{ $extra->price }}</td>
             <td>{{ $extra->per }}</td>
+            <td>{!! $extra->icon !!}</td>
             <td>
                 <div class="btn-group" role="group">
                     <a href="{{ route('extra.edit', $extra->id) }}"

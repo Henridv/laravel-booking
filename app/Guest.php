@@ -9,12 +9,13 @@ use CountryList;
 class Guest extends Model
 {
 
-	// derived attribute
-	protected $appends = ['name'];
+    // derived attribute
+    protected $appends = ['name'];
 
-	public function getNameAttribute() {
-		return $this->firstname." ".$this->lastname;
-	}
+    public function getNameAttribute()
+    {
+        return $this->firstname." ".$this->lastname;
+    }
 
     /**
      * bookings for which this guest is the main customer

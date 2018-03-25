@@ -12,4 +12,9 @@ class Extra extends Model
     {
         return $this->belongsToMany(Booking::class);
     }
+
+    public function getIconAttribute()
+    {
+        return $this->fa_icon ? '<i class="fa fa-fw'.$this->fa_icon.'"></i>' : null;
+    }
 }

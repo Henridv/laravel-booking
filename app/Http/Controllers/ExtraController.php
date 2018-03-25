@@ -20,11 +20,13 @@ class ExtraController extends Controller
             'name' => 'required|string',
             'price' => 'required|numeric|min:0',
             'per' => 'required|string',
+            'icon' => 'string'
         ]);
 
         $extra->name = $request->input('name');
         $extra->price = $request->input('price');
         $extra->per = $request->input('per');
+        $extra->fa_icon = $request->input('icon');
 
         $extra->save();
 
