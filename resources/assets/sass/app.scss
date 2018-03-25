@@ -139,6 +139,16 @@ table.floatThead-table {
   }
 }
 
+.tooltip {
+  .fa-ul {
+    margin-left: 1.5rem;
+    margin-bottom: 0;
+  }
+  .tooltip-inner {
+    text-align: left;
+  }
+}
+
 tr.booking__now, tr.booking__now a {
   color: white;
   text-shadow: 0 0 2px #000;

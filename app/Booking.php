@@ -97,12 +97,7 @@ class Booking extends Model
      */
     public function getTooltipAttribute()
     {
-        $tooltip = $this->arrival->format('H:i');
-
-        $tooltip .= ($this->composition) ? '<br />'.$this->composition : '';
-        $tooltip .= ($this->comments) ? '<br />'.$this->comments : '';
-
-        return $tooltip;
+        return view('components.tooltip', ["tooltip" => $this])->render();
     }
 
     /**
