@@ -15,6 +15,6 @@ class Extra extends Model
 
     public function getIconAttribute()
     {
-        return $this->fa_icon ? '<i class="fa fa-fw'.$this->fa_icon.'"></i>' : null;
+        return $this->fa_icon ? '<i class="fas fa-fw '.$this->fa_icon.'"></i>' : null;
     }
 }

@@ -149,6 +149,7 @@
 <table class="table table-hover mt-2" id="extrasTable">
   <thead class="thead-dark">
     <tr>
+      <th></th>
       <th>Aantal</th>
       <th>Naam</th>
       <th>Prijs</th>
@@ -158,6 +159,7 @@
   </thead>
 @foreach($booking->extras as $extra)
   <tr>
+    <td>{!! $extra->icon !!}</td>
     <td>{{ $extra->pivot->amount }}</td>
     <td>{{ $extra->name }}</td>
     <td>&euro; {{ $extra->price }}</td>

@@ -78,7 +78,17 @@
               style="background-color: {{ $booking->color()['color'] }}">
               <a href="{{ route('booking.show', $booking->id) }}">
                 {{ $booking->getGuest($i)->name }}
-                @if ($booking->isFirst($i)) &mdash; &euro;&nbsp;{{ $booking->deposit }} @endif</a>
+                @if ($booking->isFirst($i))
+                  &mdash; &euro;&nbsp;{{ $booking->deposit }}
+                  @if (!$booking->extras->isEmpty())
+                    @foreach ($booking->extras as $extra)
+                        @isset($extra->icon)
+                          @if ($loop->first) &mdash; @endif
+                          {!! $extra->icon !!}
+                        @endisset
+                    @endforeach
+                  @endif
+                @endif</a>
             </td>
             @php $d += ($booking->toShow($dates)-1) @endphp
           @elseif (!$room->bookings->isEmpty() && $room->isBookedAsWhole($date['date']))
