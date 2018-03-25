@@ -10,15 +10,15 @@ require('./bootstrap-datepicker');
 require('./bootstrap-datepicker.nl-BE.min');
 require('./jquery.floatThead');
 
-var moment = require('moment');
+const moment = require('moment');
 
 $.ajaxSetup({
-	headers: {
-		'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-	}
+  headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+  },
 });
 
-$(function(){
+$(() => {
     $('html').keydown(function(e){
         if ($('.btns__week').length > 0) {
             if (e.which == 37) {
