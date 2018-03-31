@@ -42,7 +42,7 @@
                 <option
                   @if(old('arrivalTime') === $time) selected
                   @elseif(isset($booking) && $booking->arrival->format('H:i') === $time) selected
-                  @elseif($time === '12:00') selected
+                  @elseif($time === '00:00') selected
                   @endif
                   value="{{ $time }}">{{ $time }}</option>
               @endfor

@@ -42,7 +42,7 @@
       <tr class="text-center">
         <th>kamer</th>
         @foreach($dates as $date)
-          <th class="day @if(Carbon\Carbon::now()->isSameDay($date['date'])) day__now @endif">
+          <th class="day">
             {{ $date['day'] }}<br />{{ $date['date_str'] }}
           </th>
         @endforeach
@@ -59,9 +59,12 @@
               @foreach($bookings as $booking)
                 @php $b = $booking->first(); @endphp
                 <div class="booking-card">
-                  <div><strong>{{ $b->customer->firstname }}</strong></div>
+                  <div><strong>{!! str_replace(' ', '&nbsp;', $b->customer->name) !!}</strong></div>
                   <ul class="fa-ul">
                     @if ($b->arrival->isSameDay($date['date']))
+                      @isset ($b->customer->phone)
+                        <li><span class="fa-li"><i class="fas fa-phone"></i></span>{{ $b->customer->phone }}</li>
+                      @endisset
                       <li><span class="fa-li"><i class="fas fa-clock"></i></span>{{ $b->arrival->format('H:i') }}</li>
                     @endif
                     <li><span class="fa-li"><i class="fas fa-bed"></i></span>{{ $b->guests }}</li>
