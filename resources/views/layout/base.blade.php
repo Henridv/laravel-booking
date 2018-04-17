@@ -38,6 +38,9 @@
                         <li class="nav-item @if (strstr('extras', Request::path())) active @endif">
                             <a class="nav-link" href="{{ route('extra') }}">Extra's</a>
                         </li>
+                        <li class="nav-item @if (strstr('stats', Request::path())) active @endif">
+                            <a class="nav-link" href="{{ route('stats') }}">Statistieken</a>
+                        </li>
                         @endcan
                         @can('access.admin')
                         <li class="nav-item @if (strstr('admin', Request::path())) active @endif">

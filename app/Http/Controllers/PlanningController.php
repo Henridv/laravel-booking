@@ -16,6 +16,25 @@ use CountryList;
 
 class PlanningController extends Controller
 {
+    const RECENTLY_IN_WEEKS = 2;
+
+    public function upcoming()
+    {
+        $bookings = self::getBookings(self::RECENTLY_IN_WEEKS);
+
+        $leaving = Booking::
+            whereDate('departure', Carbon::parse('today'))
+            ->join('guests', 'guests.id', '=', 'bookings.customer_id')
+            ->select('bookings.*', 'guests.firstname', 'guests.lastname')
+            ->orderBy('guests.lastname')
+            ->get();
+
+        return view('welcome', [
+            "bookings" => $bookings,
+            "leaving" => $leaving
+        ]);
+    }
+
     public function saveBooking(Request $request, Booking $booking)
     {
         $validatedData = $request->validate([

@@ -30,21 +30,7 @@ use Carbon\Carbon;
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        $bookings = PlanningController::getBookings(2);
-
-        $leaving = Booking::
-            whereDate('departure', Carbon::parse('today'))
-            ->join('guests', 'guests.id', '=', 'bookings.customer_id')
-            ->select('bookings.*', 'guests.firstname', 'guests.lastname')
-            ->orderBy('guests.lastname')
-            ->get();
-
-        return view('welcome', [
-            "bookings" => $bookings,
-            "leaving" => $leaving
-        ]);
-    })->name('welcome');
+    Route::get('/', 'PlanningController@upcoming')->name('welcome');
 
     /**
      * PLANNING
@@ -314,6 +300,31 @@ Route::middleware(['auth'])->group(function () {
 
             return redirect()->route('extra');
         })->name('extra.delete');
+    });
+
+    /**
+     * STATS
+     */
+    Route::middleware('can:edit.all')->prefix('stats')->group(function () {
+        Route::get('/', 'StatsController@index')->name('stats');
+
+        // Route::get('new', function () {
+        //     return view('extra.create');
+        // })->name('extra.create');
+
+        // Route::post('new', 'ExtraController@createExtra');
+
+        // Route::get('edit/{extra}', function (Extra $extra) {
+        //     return view('extra.create', ['extra' => $extra]);
+        // })->name('extra.edit');
+
+        // Route::post('edit/{extra}', 'ExtraController@editExtra');
+
+        // Route::get('del/{extra}', function (Extra $extra) {
+        //     $extra->delete();
+
+        //     return redirect()->route('extra');
+        // })->name('extra.delete');
     });
 
     /**

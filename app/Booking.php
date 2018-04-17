@@ -156,4 +156,11 @@ class Booking extends Model
     {
         return Carbon::parse("now")->between($this->arrival, $this->departure);
     }
+
+    public static function getInRange($from, $to)
+    {
+        return Booking::
+            whereDate('arrival', '<', $to)
+            ->whereDate('departure', '>', $from);
+    }
 }

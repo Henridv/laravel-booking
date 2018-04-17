@@ -41,8 +41,9 @@ class Guest extends Model
         return $this->bookings->concat($this->bookingsAsGuest);
     }
 
-	public function getCountryStrAttribute() {
-		$country_str = CountryList::find($this->country, app()->getLocale());
-		return $country_str;
-	}
+    public function getCountryStrAttribute()
+    {
+        $country_str = CountryList::find($this->country, app()->getLocale());
+        return $country_str;
+    }
 }
