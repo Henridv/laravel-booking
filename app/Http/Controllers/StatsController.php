@@ -12,7 +12,7 @@ use CountryList;
 class StatsController extends Controller
 {
     public const GUESTS_PER_COUNTRY = 'countries';
-    public const BOOKINGS_PER_COUNTRY = 'bookings_per_country';
+    public const NO_OF_NIGHTS = 'no_of_nights';
 
     public function index(Request $request)
     {
@@ -36,22 +36,11 @@ class StatsController extends Controller
     public function getStats($type, $from, $to)
     {
         switch ($type) {
-            case self::BOOKINGS_PER_COUNTRY:
-                $bookings = Booking::getInRange($from, $to)->with('customer')->get();
-                $bookings_per_country = $bookings->groupBy('customer.country');
-
-                $countries = $bookings_per_country->map(function ($i, $k) {
-                    return [
-                        'country_name' => CountryList::find($k, app()->getLocale()),
-                        'count' => $i->sum('guests')];
-                })->sortByDesc('count');
-                return $countries;
-
             case self::GUESTS_PER_COUNTRY:
                 $bookings = Booking::getInRange($from, $to)->with('customer')->get();
                 $bookings_per_country = $bookings->groupBy('customer.country');
 
-                $countries = $bookings_per_country->map(function ($i, $k) {
+                $stats = $bookings_per_country->map(function ($i, $k) {
                     $bookings = $i->count();
                     $guests = $i->sum('guests');
                     $guests_per_booking = $guests/$bookings;
@@ -61,8 +50,22 @@ class StatsController extends Controller
                         'guests' => $guests,
                         'guests_per_booking' => $guests_per_booking];
                 })->sortByDesc('guests');
-                return $countries;
 
+                $totals = [
+                    'bookings' => $stats->sum('bookings'),
+                    'guests' => $stats->sum('guests'),
+                    'guests_per_booking' => $stats->sum('guests') / $stats->sum('bookings'),
+                ];
+                $stats = $stats->merge(['totals' => $totals]);
+
+                return $stats;
+
+            case self::NO_OF_NIGHTS:
+                $bookings = Booking::getInRange($from, $to)->with('customer')->get();
+
+                $days = ['nights' => $bookings->sum('total_nights')];
+
+                return $days;
             default:
                 return null;
         }

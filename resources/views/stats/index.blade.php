@@ -12,8 +12,8 @@
           <select class="custom-select" name="type" id="statType">
             <option value="{{ StatsController::GUESTS_PER_COUNTRY }}"
                 @isset($type) @if($type === StatsController::GUESTS_PER_COUNTRY) selected @endif @endisset>Gasten per land</option>
-            <option value="{{ StatsController::BOOKINGS_PER_COUNTRY }}"
-                @isset($type) @if($type === StatsController::BOOKINGS_PER_COUNTRY) selected @endif @endisset>Boekingen per land</option>
+            <option value="{{ StatsController::NO_OF_NIGHTS }}"
+                @isset($type) @if($type === StatsController::NO_OF_NIGHTS) selected @endif @endisset>Aantal overnachtingen</option>
           </select>
       </div>
     </div>
@@ -44,24 +44,7 @@
   </div>
 </form>
 
-@if ($type === StatsController::BOOKINGS_PER_COUNTRY)
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>Land</th>
-            <th>Aantal boekingen</th>
-        </tr>
-        </thead>
-        <tbody>
-            @foreach ($stats as $country)
-            <tr>
-                <td>{{ $country['country_name'] }}</td>
-                <td>{{ $country['count'] }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-@elseif ($type === StatsController::GUESTS_PER_COUNTRY)
+@if ($type === StatsController::GUESTS_PER_COUNTRY)
     <table class="table table-hover">
         <thead>
         <tr>
@@ -73,6 +56,9 @@
         </thead>
         <tbody>
             @foreach ($stats as $country)
+            @if ($loop->last)
+                @break
+            @endif
             <tr>
                 <td>{{ $country['country_name'] }}</td>
                 <td>{{ $country['bookings'] }}</td>
@@ -80,6 +66,27 @@
                 <td>{{ round($country['guests_per_booking'], 2) }}</td>
             </tr>
             @endforeach
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>TOTAAL</th>
+                <th>{{ $stats['totals']['bookings'] }}</th>
+                <th>{{ $stats['totals']['guests'] }}</th>
+                <th>{{ round($stats['totals']['guests_per_booking'], 2) }}</th>
+            </tr>
+        </tfoot>
+    </table>
+@elseif ($type === StatsController::NO_OF_NIGHTS)
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Aantal overnachtingen</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ $stats['nights'] }} nachten</td>
+            </tr>
         </tbody>
     </table>
 @endif

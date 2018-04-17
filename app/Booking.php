@@ -87,9 +87,14 @@ class Booking extends Model
     /**
      * duration of booking in days
      */
-    public function days()
+    public function getDaysAttribute()
     {
-        return $this->arrival->diffInDays($this->departure);
+        return $this->arrival->startOfDay()->diffInDays($this->departure);
+    }
+
+    public function getTotalNightsAttribute()
+    {
+        return $this->days * $this->guests;
     }
 
     /**
@@ -160,7 +165,7 @@ class Booking extends Model
     public static function getInRange($from, $to)
     {
         return Booking::
-            whereDate('arrival', '<', $to)
-            ->whereDate('departure', '>', $from);
+            whereDate('arrival', '<=', $to)
+            ->whereDate('departure', '>=', $from);
     }
 }
