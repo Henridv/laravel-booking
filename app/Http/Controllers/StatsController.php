@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Booking;
+use App\Room;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -20,24 +21,41 @@ class StatsController extends Controller
         $to_date = new Carbon($request->query('to', $from_date->copy()->addMonth()));
 
         $type = $request->query('type', self::GUESTS_PER_COUNTRY);
-        $stats = $this->getStats($type, $from_date, $to_date);
 
-        return view('stats.index', [
-            'type' => $type,
-            'stats' => $stats,
-            'from_date' => $from_date,
-            'to_date' => $to_date,
-        ]);
+        $rooms = Room::all();
+        $selectedRooms = $request->query('rooms', []);
+
+        $stats = $this->getStats($type, $from_date, $to_date, $selectedRooms);
+
+        return view('stats.index', compact(
+            'type',
+            'stats',
+            'from_date',
+            'to_date',
+            'rooms',
+            'selectedRooms'
+        ));
     }
 
     /**
      * Generate stats based on type
      */
-    public function getStats($type, $from, $to)
+    public function getStats($type, $from, $to, $rooms)
     {
         switch ($type) {
             case self::GUESTS_PER_COUNTRY:
-                $bookings = Booking::getInRange($from, $to)->with('customer')->get();
+                $bookings = Booking::getInRange($from, $to)
+                    ->with('customer');
+
+                if ($rooms && count($rooms) > 0) {
+                    $bookings = $bookings
+                        ->whereHas('rooms', function ($query) use ($rooms) {
+                            $query->whereIn('room_id', $rooms);
+                        });
+                }
+
+                $bookings = $bookings->get();
+
                 $bookings_per_country = $bookings->groupBy('customer.country');
 
                 $stats = $bookings_per_country->map(function ($i, $k) {
@@ -61,7 +79,17 @@ class StatsController extends Controller
                 return $stats;
 
             case self::NO_OF_NIGHTS:
-                $bookings = Booking::getInRange($from, $to)->with('customer')->get();
+                $bookings = Booking::getInRange($from, $to)
+                    ->with('customer');
+
+                if ($rooms && count($rooms) > 0) {
+                    $bookings = $bookings
+                        ->whereHas('rooms', function ($query) use ($rooms) {
+                            $query->whereIn('room_id', $rooms);
+                        });
+                }
+
+                $bookings = $bookings->get();
 
                 $days = ['nights' => $bookings->sum('total_nights')];
 

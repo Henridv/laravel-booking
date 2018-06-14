@@ -2,7 +2,7 @@
 
 @section('content')
 @php use App\Http\Controllers\StatsController; @endphp
-<h1>Extra's</h1>
+<h1>Statistieken</h1>
 
 <form method="GET">
   <div class="form-row">
@@ -39,6 +39,23 @@
       <div class="form-group">
         <label>&nbsp;</label>
         <button type="submit" class="form-control btn btn-primary">Genereer</button>
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-9">
+      <div class="form-group">
+        <p>Kamers</p>
+        @foreach ($rooms as $room)
+          <div class="custom-control custom-checkbox">
+            <input class="custom-control-input" type="checkbox"
+                name="rooms[]"
+                id="room{{ $room->id }}"
+                value="{{ $room->id }}"
+                @if (count($selectedRooms) === 0 || in_array($room->id, $selectedRooms)) checked @endif>
+            <label class="custom-control-label" for="room{{ $room->id }}">{{ $room->name }}</label>
+          </div>
+        @endforeach
       </div>
     </div>
   </div>
