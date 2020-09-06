@@ -19,7 +19,7 @@
     "eslint-plugin-import": "^2.18.2",
     "jquery": "^3.5.1",
     "laravel-mix": "^4.1.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "popper.js": "^1.16.1",
     "resolve-url-loader": "^3.1.0",
     "sass": "^1.22.9",
