@@ -155,14 +155,6 @@
             @endif>
         </div>
       </div>
-      <div class="form-check">
-        <input class="form-check-input" id="extBookingCheck" name="ext_booking" type="checkbox" value="yes"
-          @if(old('ext_booking')) checked
-          @elseif(isset($booking) && $booking->ext_booking) checked @endif>
-        <label class="form-check-label" for="extBookingCheck">
-          Externe boeking? (booking.com,&hellip;)
-        </label>
-      </div>
     </div>
   </div>
   <div class="row justify-content-md-center mt-4">

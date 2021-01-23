@@ -66,19 +66,6 @@
         <td>&euro;&nbsp;{{ $booking->remaining }}</td>
       </tr>
 
-      @can('edit.all')
-      <tr>
-        <th>Externe booking (booking.com,...)</th>
-        <td>
-          @if ($booking->ext_booking)
-          ja
-          @else
-          nee
-          @endif
-        </td>
-      </tr>
-      @endcan
-
       <tr>
         <th>Opmerkingen</th>
         <td>{!! nl2br($booking->comments) !!}</td>

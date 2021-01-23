@@ -18,16 +18,6 @@ class RoleTableSeeder extends Seeder
         $role_viewer->description = 'Only viewing';
         $role_viewer->save();
 
-        $role_int_viewer = new Role();
-        $role_int_viewer->name = 'viewer.internal';
-        $role_int_viewer->description = 'Only view internal bookings';
-        $role_int_viewer->save();
-
-        $role_ext_viewer = new Role();
-        $role_ext_viewer->name = 'viewer.external';
-        $role_ext_viewer->description = 'Only view external bookings';
-        $role_ext_viewer->save();
-
         $role_admin = new Role();
         $role_admin->name = 'admin';
         $role_admin->description = 'An admin';

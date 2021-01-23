@@ -60,8 +60,6 @@ class PlanningController extends Controller
         $booking->composition = $request->input('composition');
         $booking->comments = $request->input('comments');
 
-        $booking->ext_booking = ("no" !== $request->input('ext_booking', 'no'));
-
         $placement = explode(';', $request->input('room'));
         $room_id = (int)$placement[0];
         $part = count($placement) > 1 ? (int)$placement[1] : -1;
