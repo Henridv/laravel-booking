@@ -56,6 +56,10 @@ class StatsController extends Controller
 
                 $bookings = $bookings->get();
 
+                if ($bookings->count() == 0) {
+                    return [];
+                }
+
                 $bookings_per_country = $bookings->groupBy('customer.country');
 
                 $stats = $bookings_per_country->map(function ($i, $k) {
@@ -69,13 +73,10 @@ class StatsController extends Controller
                         'guests_per_booking' => $guests_per_booking];
                 })->sortByDesc('guests');
 
-                $guests_per_booking = $stats->sum('bookings') == 0
-                    ? 0
-                    : $stats->sum('guests') / $stats->sum('bookings');
                 $totals = [
                     'bookings' => $stats->sum('bookings'),
                     'guests' => $stats->sum('guests'),
-                    'guests_per_booking' => $guests_per_booking,
+                    'guests_per_booking' => $stats->sum('guests') / $stats->sum('bookings'),
                 ];
                 $stats = $stats->merge(['totals' => $totals]);
 

@@ -87,9 +87,9 @@
         <tfoot>
             <tr>
                 <th>TOTAAL</th>
-                <th>{{ $stats['totals']['bookings'] }}</th>
-                <th>{{ $stats['totals']['guests'] }}</th>
-                <th>{{ round($stats['totals']['guests_per_booking'], 2) }}</th>
+                <th>{{ $stats ? $stats['totals']['bookings'] : 0 }}</th>
+                <th>{{ $stats ? $stats['totals']['guests'] : 0 }}</th>
+                <th>{{ $stats ? round($stats['totals']['guests_per_booking'], 2) : 0 }}</th>
             </tr>
         </tfoot>
     </table>
