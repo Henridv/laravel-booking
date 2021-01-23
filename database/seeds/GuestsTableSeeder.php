@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Guest as Guest;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class GuestsTableSeeder extends Seeder
 {
@@ -15,17 +16,17 @@ class GuestsTableSeeder extends Seeder
         for ($i=0; $i < 100; $i++) {
             $guest = new Guest;
             $guest->firstname = "John";
-            $guest->lastname = "Doe ".str_random(2);
-            $guest->email = str_random(10)."@gmail.com";
-            $guest->phone = str_random(10);
+            $guest->lastname = "Doe ".Str::random(2);
+            $guest->email = Str::random(10)."@gmail.com";
+            $guest->phone = Str::random(10);
             $guest->country = "BE";
 
-			$hash = sha1($guest->name);
+            $hash = sha1($guest->name);
 
-			$r = substr($hash, 0,2);
-			$g = substr($hash, 2,2);
-			$b = substr($hash, 4,2);
-			
+            $r = substr($hash, 0,2);
+            $g = substr($hash, 2,2);
+            $b = substr($hash, 4,2);
+
             $guest->color = '#'.$r.$g.$b;
 
             $guest->save();
