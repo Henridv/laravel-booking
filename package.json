@@ -29,7 +29,7 @@
     "vue-template-compiler": "^2.6.12"
   },
   "dependencies": {
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "select2": "^4.0.8",
     "select2-bootstrap-theme": "0.1.0-beta.10"
   }
